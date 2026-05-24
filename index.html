@@ -746,6 +746,8 @@
                 <td className="p-2 border">{row.Pembayaran}</td>
                 <td className="p-2 border">{formatRp(row.Nominal)}</td>
                 <td className="p-2 border">{row['Kode Transaksi']}</td>
+                <td className="p-2 border">{row['Fee']}</td>
+                <td className="p-2 border">{formatRp(row.NominalFee)}</td>
               </tr>
             ))}
           </tbody>
