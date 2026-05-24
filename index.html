@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -78,12 +79,10 @@
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka || 0);
     };
 
-    // FIX: Fungsi Parser untuk mengonversi URL Google Drive ke format Thumbnail yang bisa dirender di <img>
     const getSafeImageUrl = (url) => {
       if (!url) return '';
       const match = url.match(/id=([a-zA-Z0-9_-]+)/);
       if (match && match[1]) {
-        // Gunakan endpoint thumbnail Drive (w800 = lebar max 800px)
         return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
       }
       return url;
@@ -160,7 +159,6 @@
         return [...new Set(years)].sort((a,b) => b-a);
       }, [data]);
 
-      // FIX: Menambah durasi setTimeout menjadi 1.5 detik agar gambar Google Drive punya waktu untuk dimuat sebelum di-print
       useEffect(() => {
         if (printMode) {
           setTimeout(() => {
@@ -720,6 +718,7 @@
       </div>
     );
 
+    // DITAMBAHKAN: Kolom Fee (%) dan Nominal Fee untuk Tabel Cetak
     const TablePrintView = ({ data, filterBulan, filterTahun }) => (
       <div>
         <h1 className="text-2xl font-bold text-center mb-2">Laporan Hasil Pena Anggih Saeful Khiyar</h1>
@@ -733,7 +732,7 @@
               <th className="p-2 border">Pembayaran</th>
               <th className="p-2 border">Nominal</th>
               <th className="p-2 border">Kode Transaksi</th>
-              <th className="p-2 border">Fee</th>
+              <th className="p-2 border text-center">Fee (%)</th>
               <th className="p-2 border">Nominal Fee</th>
             </tr>
           </thead>
@@ -744,10 +743,10 @@
                 <td className="p-2 border">{row.Nama} - {row.Alamat}</td>
                 <td className="p-2 border">{row.Produk}</td>
                 <td className="p-2 border">{row.Pembayaran}</td>
-                <td className="p-2 border">{formatRp(row.Nominal)}</td>
-                <td className="p-2 border">{row['Kode Transaksi']}</td>
-                <td className="p-2 border">{row['Fee']}</td>
-                <td className="p-2 border">{formatRp(row.NominalFee)}</td>
+                <td className="p-2 border whitespace-nowrap">{formatRp(row.Nominal)}</td>
+                <td className="p-2 border font-mono text-xs">{row['Kode Transaksi']}</td>
+                <td className="p-2 border text-center">{row['Persentase Fee']}%</td>
+                <td className="p-2 border whitespace-nowrap">{formatRp(row['Nominal Fee'])}</td>
               </tr>
             ))}
           </tbody>
@@ -755,7 +754,6 @@
       </div>
     );
 
-    // FIX: Terapkan getSafeImageUrl() pada Print Bukti
     const BuktiPrintView = ({ data, type }) => {
       const urlKey = type === 'perawatan' ? 'URL Bukti Perawatan' : 'URL Bukti Transfer';
       const validData = data.filter(d => d[urlKey] && d[urlKey].trim() !== "");
@@ -783,3 +781,6 @@
   </script>
 </body>
 </html>
+
+
+```
