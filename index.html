@@ -728,47 +728,68 @@
       </div>
     );
 
-    const TablePrintView = ({ data, filterBulan, filterTahun }) => (
-      <div>
-        <h1 className="text-2xl font-bold text-center mb-2">Laporan Hasil Pena Anggih Saeful Khiyar</h1>
-        <p className="text-center mb-6 text-gray-600">
-          Periode: {filterBulan === 'Semua' ? 'Sepanjang Tahun' : NAMA_BULAN[parseInt(filterBulan) - 1]} - {filterTahun}
-        </p>
-        <table className="w-full text-left border-collapse border border-gray-300 text-sm">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="p-2 border">Tanggal</th>
-              <th className="p-2 border">Nama</th>
-              <th className="p-2 border">Produk</th>
-              <th className="p-2 border text-center">Pembayaran</th>
-              <th className="p-2 border">Nominal</th>
-              <th className="p-2 border">Kode Transaksi</th>
-              <th className="p-2 border text-center">Fee (%)</th>
-              <th className="p-2 border">Nominal Fee</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, idx) => (
-              <tr key={idx}>
-                <td className="p-2 border">{row.Tanggal ? new Date(row.Tanggal).toLocaleDateString('id-ID') : '-'}</td>
-                <td className="p-2 border">{row.Nama} - {row.Alamat}</td>
-                <td className="p-2 border">{row.Produk}</td>
-                {/* FIX: Menambahkan padding, border, dan bg color dengan bentuk badge pada Layout Cetak */}
-                <td className="p-2 border text-center">
-                  <span className={`px-2 py-1 border rounded text-xs font-semibold inline-block ${row.Pembayaran === 'Transfer' ? 'bg-blue-100 text-blue-800 border-blue-300' : 'bg-green-100 text-green-800 border-green-300'}`}>
-                    {row.Pembayaran}
-                  </span>
-                </td>
-                <td className="p-2 border whitespace-nowrap">{formatRp(row.Nominal)}</td>
-                <td className="p-2 border font-mono text-xs">{row['Kode Transaksi']}</td>
-                <td className="p-2 border text-center">{row['Persentase Fee']}%</td>
-                <td className="p-2 border whitespace-nowrap">{formatRp(row['Nominal Fee'])}</td>
+    const TablePrintView = ({ data, filterBulan, filterTahun }) => {
+      // FIX: Kalkulasi Total untuk Nominal dan Nominal Fee
+      const totalNominal = data.reduce((sum, row) => sum + (Number(row.Nominal) || 0), 0);
+      const totalNominalFee = data.reduce((sum, row) => sum + (Number(row['Nominal Fee']) || 0), 0);
+
+      return (
+        <div>
+          <h1 className="text-2xl font-bold text-center mb-2">Laporan Hasil Pena Anggih Saeful Khiyar</h1>
+          <p className="text-center mb-6 text-gray-600">
+            Periode: {filterBulan === 'Semua' ? 'Sepanjang Tahun' : NAMA_BULAN[parseInt(filterBulan) - 1]} - {filterTahun}
+          </p>
+          <table className="w-full text-left border-collapse border border-gray-300 text-sm">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="p-2 border">Tanggal</th>
+                <th className="p-2 border">Nama</th>
+                <th className="p-2 border">Produk</th>
+                <th className="p-2 border text-center">Pembayaran</th>
+                <th className="p-2 border">Nominal</th>
+                <th className="p-2 border">Kode Transaksi</th>
+                <th className="p-2 border text-center">Fee (%)</th>
+                <th className="p-2 border">Nominal Fee</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
+            </thead>
+            <tbody>
+              {data.map((row, idx) => (
+                <tr key={idx}>
+                  <td className="p-2 border">{row.Tanggal ? new Date(row.Tanggal).toLocaleDateString('id-ID') : '-'}</td>
+                  <td className="p-2 border">{row.Nama} - {row.Alamat}</td>
+                  <td className="p-2 border">{row.Produk}</td>
+                  <td className="p-2 border text-center">
+                    <span className={`px-2 py-1 border rounded text-xs font-semibold inline-block ${row.Pembayaran === 'Transfer' ? 'bg-blue-100 text-blue-800 border-blue-300' : 'bg-green-100 text-green-800 border-green-300'}`}>
+                      {row.Pembayaran}
+                    </span>
+                  </td>
+                  <td className="p-2 border whitespace-nowrap">{formatRp(row.Nominal)}</td>
+                  <td className="p-2 border font-mono text-xs">{row['Kode Transaksi']}</td>
+                  <td className="p-2 border text-center">{row['Persentase Fee']}%</td>
+                  <td className="p-2 border whitespace-nowrap">{formatRp(row['Nominal Fee'])}</td>
+                </tr>
+              ))}
+              {data.length === 0 && (
+                <tr>
+                  <td colSpan="8" className="p-4 border text-center text-gray-500">Tidak ada data untuk periode ini</td>
+                </tr>
+              )}
+            </tbody>
+            {/* FIX: Menambahkan Footer untuk Total Row */}
+            {data.length > 0 && (
+              <tfoot className="bg-gray-100 font-bold">
+                <tr>
+                  <td colSpan="4" className="p-2 border text-right">TOTAL:</td>
+                  <td className="p-2 border whitespace-nowrap text-indigo-900">{formatRp(totalNominal)}</td>
+                  <td colSpan="2" className="p-2 border bg-gray-50"></td>
+                  <td className="p-2 border whitespace-nowrap text-indigo-900">{formatRp(totalNominalFee)}</td>
+                </tr>
+              </tfoot>
+            )}
+          </table>
+        </div>
+      );
+    };
 
     const BuktiPrintView = ({ data, type, filterBulan, filterTahun }) => {
       const urlKey = type === 'perawatan' ? 'URL Bukti Perawatan' : 'URL Bukti Transfer';
@@ -776,7 +797,7 @@
 
       return (
         <div>
-          <h1 className="text-2xl font-bold text-center mb-2 capitalize">Cetak Bukti {type}</h1>
+          <h1 className="text-2xl font-bold text-center mb-2 capitalize">Bukti {type}</h1>
           <p className="text-center mb-6 text-gray-600">
             Periode: {filterBulan === 'Semua' ? 'Sepanjang Tahun' : NAMA_BULAN[parseInt(filterBulan) - 1]} - {filterTahun}
           </p>
