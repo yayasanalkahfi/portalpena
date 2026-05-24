@@ -78,6 +78,17 @@
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka || 0);
     };
 
+    // FIX: Fungsi Parser untuk mengonversi URL Google Drive ke format Thumbnail yang bisa dirender di <img>
+    const getSafeImageUrl = (url) => {
+      if (!url) return '';
+      const match = url.match(/id=([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) {
+        // Gunakan endpoint thumbnail Drive (w800 = lebar max 800px)
+        return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
+      }
+      return url;
+    };
+
     const compressImage = (file) => {
       return new Promise((resolve) => {
         const reader = new FileReader();
@@ -122,7 +133,7 @@
           const result = await response.json();
           if (result.success) {
             setData(result.data || []);
-            setProducts(result.products || []); // Fallback ke array kosong jika belum ada produk
+            setProducts(result.products || []);
           } else {
             setError(result.error);
           }
@@ -149,12 +160,13 @@
         return [...new Set(years)].sort((a,b) => b-a);
       }, [data]);
 
+      // FIX: Menambah durasi setTimeout menjadi 1.5 detik agar gambar Google Drive punya waktu untuk dimuat sebelum di-print
       useEffect(() => {
         if (printMode) {
           setTimeout(() => {
             window.print();
             setPrintMode(null);
-          }, 500);
+          }, 1500);
         }
       }, [printMode]);
 
@@ -539,13 +551,17 @@
               <div>
                 <span className="text-gray-500 block text-sm mb-1">Bukti Transfer</span>
                 {record['URL Bukti Transfer'] ? 
-                  <a href={record['URL Bukti Transfer']} target="_blank" className="block border rounded p-1 hover:border-indigo-500"><img src={record['URL Bukti Transfer']} alt="Bukti Transfer" className="w-full h-48 object-cover rounded" /></a> : 
+                  <a href={record['URL Bukti Transfer']} target="_blank" className="block border rounded p-1 hover:border-indigo-500">
+                    <img src={getSafeImageUrl(record['URL Bukti Transfer'])} alt="Bukti Transfer" className="w-full h-48 object-cover rounded" />
+                  </a> : 
                   <div className="bg-gray-100 h-48 rounded flex items-center justify-center text-sm text-gray-400">Tidak ada gambar</div>}
               </div>
               <div>
                 <span className="text-gray-500 block text-sm mb-1">Bukti Perawatan</span>
                 {record['URL Bukti Perawatan'] ? 
-                  <a href={record['URL Bukti Perawatan']} target="_blank" className="block border rounded p-1 hover:border-indigo-500"><img src={record['URL Bukti Perawatan']} alt="Bukti Perawatan" className="w-full h-48 object-cover rounded" /></a> : 
+                  <a href={record['URL Bukti Perawatan']} target="_blank" className="block border rounded p-1 hover:border-indigo-500">
+                    <img src={getSafeImageUrl(record['URL Bukti Perawatan'])} alt="Bukti Perawatan" className="w-full h-48 object-cover rounded" />
+                  </a> : 
                   <div className="bg-gray-100 h-48 rounded flex items-center justify-center text-sm text-gray-400">Tidak ada gambar</div>}
               </div>
             </div>
@@ -644,7 +660,6 @@
                   <label className="block text-sm font-medium mb-1">Produk</label>
                   <select className="w-full border p-2 rounded mb-2" value={formData.Produk} onChange={e => setFormData({...formData, Produk: e.target.value})}>
                     <option value="">Pilih Produk...</option>
-                    {/* Fallback array aman */}
                     {(products || []).map(p => <option key={p} value={p}>{p}</option>)}
                   </select>
                   <input type="text" placeholder="Atau ketik produk baru..." className="w-full border p-2 rounded text-sm" value={newProduct} onChange={e => { setNewProduct(e.target.value); setFormData({...formData, Produk: ''}); }} />
@@ -736,6 +751,7 @@
       </div>
     );
 
+    // FIX: Terapkan getSafeImageUrl() pada Print Bukti
     const BuktiPrintView = ({ data, type }) => {
       const urlKey = type === 'perawatan' ? 'URL Bukti Perawatan' : 'URL Bukti Transfer';
       const validData = data.filter(d => d[urlKey] && d[urlKey].trim() !== "");
@@ -746,7 +762,7 @@
           <div className="print-card-layout">
             {validData.map((row, idx) => (
               <div key={idx} className="bukti-card">
-                <img src={row[urlKey]} className="bukti-img" alt={`Bukti ${type}`} />
+                <img src={getSafeImageUrl(row[urlKey])} className="bukti-img" alt={`Bukti ${type}`} />
                 <div className="font-bold text-sm truncate">{row.Nama}</div>
                 <div className="text-xs text-gray-600 truncate">{row.Alamat}</div>
                 <div className="mt-2 text-xs font-mono bg-gray-100 p-1 rounded inline-block">{row['Kode Transaksi']}</div>
