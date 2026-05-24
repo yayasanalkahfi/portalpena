@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Laporan Hasil Pena</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <!-- Babel for JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* CSS Khusus untuk Print */
+    @media print {
+      body * { visibility: hidden; }
+      #print-area, #print-area * { visibility: visible; }
+      #print-area { position: absolute; left: 0; top: 0; width: 100%; }
+      
+      .no-print { display: none !important; }
+      
+      /* Layout untuk Cetak Kartu Bukti */
+      .print-card-layout {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        width: 100%;
+      }
+      .bukti-card {
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 10px;
+        page-break-inside: avoid;
+        text-align: center;
+      }
+      .bukti-img {
+        aspect-ratio: 9/16;
+        object-fit: cover;
+        width: 100%;
+        border-radius: 6px;
+        margin-bottom: 10px;
+      }
+      .chart-container {
+        page-break-inside: avoid;
+      }
+    }
+
+    /* Modal Overlay */
+    .modal-overlay {
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(2px);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useMemo } = React;
+
+    // ==========================================
+    // CONFIGURATION (PASTE URL GAS DI SINI)
+    // ==========================================
+    const API_URL = "https://script.google.com/macros/s/AKfycbyg0lQb5kO7rtCl2xC9qyiMWU2_0wt0xGPkyWogXgYnYmmaZGyDz46Cw-RkHEwo8B5Yxw/exec";
+
+    // ==========================================
+    // HELPER COMPONENTS (Icons & Utilities)
+    // ==========================================
+    const IconBarChart = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>;
+    const IconList = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>;
+    const IconWallet = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>;
+    const IconBank = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>;
+    const IconPrinter = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>;
+    const IconDownload = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>;
+    const IconPlus = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
+
+    // Utility Format Rupiah
+    const formatRp = (angka) => {
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka || 0);
+    };
+
+    // Client-side Image Compression (Mencegah payload terlalu besar)
+    const compressImage = (file) => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 800; // Resize max width
+            const scaleSize = MAX_WIDTH / img.width;
+            canvas.width = MAX_WIDTH;
+            canvas.height = img.height * scaleSize;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.6); // Compress to 60% JPEG
+            resolve({ name: file.name, base64: dataUrl });
+          }
+        };
+      });
+    };
+
+    // ==========================================
+    // MAIN APP COMPONENT
+    // ==========================================
+    const App = () => {
+      const [activeTab, setActiveTab] = useState('dashboard');
+      const [data, setData] = useState([]);
+      const [products, setProducts] = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState(null);
+      
+      // Filters
+      const [filterBulan, setFilterBulan] = useState('Semua');
+      const [filterTahun, setFilterTahun] = useState('Semua');
+
+      // State Print (Untuk mengatur elemen mana yang dirender saat diprint)
+      const [printMode, setPrintMode] = useState(null);
+
+      // Fetch Data
+      const fetchData = async () => {
+        setLoading(true);
+        if(API_URL === "URL_WEB_APP_ANDA_DISINI") {
+            setError("Silakan ganti API_URL dengan URL Web App Google Apps Script Anda di dalam kode index.html");
+            setLoading(false);
+            return;
+        }
+        try {
+          const response = await fetch(API_URL);
+          const result = await response.json();
+          if (result.success) {
+            setData(result.data);
+            setProducts(result.products);
+          } else {
+            setError(result.error);
+          }
+        } catch (err) {
+          setError("Gagal mengambil data. Pastikan API URL benar dan dapat diakses.");
+        }
+        setLoading(false);
+      };
+
+      useEffect(() => { fetchData(); }, []);
+
+      // Filter Logic
+      const filteredData = useMemo(() => {
+        return data.filter(item => {
+          if(!item.Tanggal) return false;
+          const date = new Date(item.Tanggal);
+          const monthMatch = filterBulan === 'Semua' || date.getMonth() + 1 === parseInt(filterBulan);
+          const yearMatch = filterTahun === 'Semua' || date.getFullYear() === parseInt(filterTahun);
+          return monthMatch && yearMatch;
+        });
+      }, [data, filterBulan, filterTahun]);
+
+      const availableYears = useMemo(() => {
+        const years = data.map(item => new Date(item.Tanggal).getFullYear()).filter(y => !isNaN(y));
+        return [...new Set(years)].sort((a,b) => b-a);
+      }, [data]);
+
+      // Print Handler Interceptor
+      useEffect(() => {
+        if (printMode) {
+          setTimeout(() => {
+            window.print();
+            setPrintMode(null); // Reset setelah dialog print tertutup
+          }, 500); // Beri waktu DOM render layout khusus
+        }
+      }, [printMode]);
+
+      return (
+        <div className="flex h-screen overflow-hidden bg-gray-100">
+          {/* Sidebar */}
+          <aside className="w-64 bg-indigo-900 text-white flex flex-col no-print">
+            <div className="p-6 font-bold text-xl border-b border-indigo-800">
+              Portal Pena
+            </div>
+            <nav className="flex-1 p-4 space-y-2">
+              <button 
+                onClick={() => setActiveTab('dashboard')} 
+                className={`w-full flex items-center p-3 rounded-lg transition-colors ${activeTab === 'dashboard' ? 'bg-indigo-700' : 'hover:bg-indigo-800'}`}>
+                <span className="mr-3"><IconBarChart /></span> Dashboard
+              </button>
+              <button 
+                onClick={() => setActiveTab('rekap')} 
+                className={`w-full flex items-center p-3 rounded-lg transition-colors ${activeTab === 'rekap' ? 'bg-indigo-700' : 'hover:bg-indigo-800'}`}>
+                <span className="mr-3"><IconList /></span> Master Rekap
+              </button>
+            </nav>
+          </aside>
+
+          {/* Main Content */}
+          <main className="flex-1 flex flex-col h-screen overflow-y-auto">
+            {/* Header (No Print) */}
+            <header className="bg-white shadow-sm p-4 flex justify-between items-center no-print">
+              <h2 className="text-xl font-bold text-gray-800">
+                {activeTab === 'dashboard' ? 'Dashboard Analitik' : 'Master Rekap'}
+              </h2>
+              
+              <div className="flex gap-4 items-center">
+                {/* Global Filters */}
+                <select className="border p-2 rounded text-sm" value={filterBulan} onChange={(e) => setFilterBulan(e.target.value)}>
+                  <option value="Semua">Sepanjang Tahun</option>
+                  {[...Array(12)].map((_, i) => <option key={i} value={i+1}>Bulan {i+1}</option>)}
+                </select>
+                <select className="border p-2 rounded text-sm" value={filterTahun} onChange={(e) => setFilterTahun(e.target.value)}>
+                  <option value="Semua">Semua Tahun</option>
+                  {availableYears.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
+              </div>
+            </header>
+
+            <div className="p-6">
+              {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
+              {loading && !data.length ? (
+                <div className="flex justify-center items-center h-64">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-900"></div>
+                </div>
+              ) : (
+                <>
+                  {activeTab === 'dashboard' && <DashboardTab data={filteredData} setPrintMode={setPrintMode} />}
+                  {activeTab === 'rekap' && <RekapTab data={filteredData} rawData={data} products={products} reloadData={fetchData} setPrintMode={setPrintMode} />}
+                </>
+              )}
+            </div>
+          </main>
+
+          {/* Render Area Khusus Print */}
+          {printMode && (
+            <div id="print-area" className="bg-white p-8">
+              {printMode === 'dashboard' && <DashboardPrintView data={filteredData} filterBulan={filterBulan} filterTahun={filterTahun} />}
+              {printMode === 'table' && <TablePrintView data={filteredData} filterBulan={filterBulan} filterTahun={filterTahun} />}
+              {printMode === 'bukti_perawatan' && <BuktiPrintView data={filteredData} type="perawatan" />}
+              {printMode === 'bukti_transfer' && <BuktiPrintView data={filteredData} type="transfer" />}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    // ==========================================
+    // TAB 1: DASHBOARD
+    // ==========================================
+    const DashboardTab = ({ data, setPrintMode }) => {
+      // Kalkulasi Makro
+      const hasilTransfer = data.filter(d => d.Pembayaran === 'Transfer').reduce((sum, item) => sum + (Number(item.Nominal) || 0), 0);
+      const hasilTunai = data.filter(d => d.Pembayaran === 'Tunai').reduce((sum, item) => sum + (Number(item.Nominal) || 0), 0);
+      const hasilMakro = hasilTransfer + hasilTunai;
+
+      const handleExportPDF = () => {
+        window.print(); // Browser print-to-pdf is the cleanest way for single file
+      };
+
+      return (
+        <div className="space-y-6">
+          {/* Top Actions */}
+          <div className="flex justify-end gap-2 no-print">
+            <button onClick={() => setPrintMode('dashboard')} className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded shadow hover:bg-indigo-700">
+              <IconPrinter /> Print Dashboard
+            </button>
+            <button onClick={handleExportPDF} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700">
+              <IconDownload /> Export (Simpan PDF)
+            </button>
+          </div>
+
+          {/* Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-xl shadow border-l-4 border-indigo-500">
+              <div className="flex items-center justify-between text-gray-500 mb-2">
+                <h3 className="font-semibold text-lg">Hasil Makro</h3>
+                <IconWallet />
+              </div>
+              <p className="text-3xl font-bold text-gray-800">{formatRp(hasilMakro)}</p>
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow border-l-4 border-blue-500">
+              <div className="flex items-center justify-between text-gray-500 mb-2">
+                <h3 className="font-semibold text-lg">Hasil Transfer</h3>
+                <IconBank />
+              </div>
+              <p className="text-3xl font-bold text-gray-800">{formatRp(hasilTransfer)}</p>
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow border-l-4 border-emerald-500">
+              <div className="flex items-center justify-between text-gray-500 mb-2">
+                <h3 className="font-semibold text-lg">Hasil Tunai</h3>
+                <IconWallet />
+              </div>
+              <p className="text-3xl font-bold text-gray-800">{formatRp(hasilTunai)}</p>
+            </div>
+          </div>
+
+          {/* Charts Row 1 */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white p-6 rounded-xl shadow chart-container">
+              <h3 className="font-semibold mb-4 text-gray-700">Trend Line Hasil (Makro, Transfer, Tunai)</h3>
+              <TrendChart data={data} />
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow chart-container">
+              <h3 className="font-semibold mb-4 text-gray-700">Produk Terlaris</h3>
+              <ProductChart data={data} />
+            </div>
+          </div>
+
+          {/* Charts Row 2 */}
+          <div className="bg-white p-6 rounded-xl shadow chart-container">
+            <h3 className="font-semibold mb-4 text-gray-700">Heat Map: Hasil Bulanan/Tahunan</h3>
+            <HeatMapChart data={data} />
+          </div>
+        </div>
+      );
+    };
+
+    // ==========================================
+    // CHART COMPONENTS
+    // ==========================================
+    const TrendChart = ({ data }) => {
+      const canvasRef = useRef(null);
+      const chartInstance = useRef(null);
+
+      useEffect(() => {
+        if (!canvasRef.current || !data) return;
+
+        // Group data by date (month/year)
+        const grouped = {};
+        data.forEach(item => {
+          if (!item.Tanggal) return;
+          const d = new Date(item.Tanggal);
+          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+          if (!grouped[key]) grouped[key] = { makro: 0, transfer: 0, tunai: 0 };
+          const nom = Number(item.Nominal) || 0;
+          if (item.Pembayaran === 'Transfer') grouped[key].transfer += nom;
+          if (item.Pembayaran === 'Tunai') grouped[key].tunai += nom;
+          grouped[key].makro += nom;
+        });
+
+        const labels = Object.keys(grouped).sort();
+        const dMakro = labels.map(l => grouped[l].makro);
+        const dTransfer = labels.map(l => grouped[l].transfer);
+        const dTunai = labels.map(l => grouped[l].tunai);
+
+        if (chartInstance.current) chartInstance.current.destroy();
+
+        chartInstance.current = new Chart(canvasRef.current, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [
+              { label: 'Makro', data: dMakro, borderColor: '#4f46e5', backgroundColor: '#4f46e5', tension: 0.3 },
+              { label: 'Transfer', data: dTransfer, borderColor: '#3b82f6', backgroundColor: '#3b82f6', tension: 0.3 },
+              { label: 'Tunai', data: dTunai, borderColor: '#10b981', backgroundColor: '#10b981', tension: 0.3 }
+            ]
+          },
+          options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+        return () => { if (chartInstance.current) chartInstance.current.destroy(); }
+      }, [data]);
+      return <canvas ref={canvasRef}></canvas>;
+    };
+
+    const ProductChart = ({ data }) => {
+      const canvasRef = useRef(null);
+      const chartInstance = useRef(null);
+
+      useEffect(() => {
+        if (!canvasRef.current || !data) return;
+        const grouped = {};
+        data.forEach(item => {
+          const prod = item.Produk || 'Unknown';
+          grouped[prod] = (grouped[prod] || 0) + 1; // Count based
+        });
+        const labels = Object.keys(grouped);
+        const dataset = Object.values(grouped);
+
+        if (chartInstance.current) chartInstance.current.destroy();
+        chartInstance.current = new Chart(canvasRef.current, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [{ label: 'Jumlah Penjualan', data: dataset, backgroundColor: '#8b5cf6' }]
+          },
+          options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+        return () => { if (chartInstance.current) chartInstance.current.destroy(); }
+      }, [data]);
+      return <canvas ref={canvasRef}></canvas>;
+    };
+
+    const HeatMapChart = ({ data }) => {
+      // Custom CSS Grid implementation of a Heatmap for simplicity and no heavy library dependency
+      const { matrix, maxVal, years } = useMemo(() => {
+        let max = 0;
+        const grid = {};
+        data.forEach(item => {
+          if (!item.Tanggal) return;
+          const d = new Date(item.Tanggal);
+          const y = d.getFullYear();
+          const m = d.getMonth() + 1;
+          if (!grid[y]) grid[y] = {};
+          grid[y][m] = (grid[y][m] || 0) + (Number(item.Nominal) || 0);
+          if (grid[y][m] > max) max = grid[y][m];
+        });
+        return { matrix: grid, maxVal: max, years: Object.keys(grid).sort() };
+      }, [data]);
+
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+
+      const getColor = (val) => {
+        if (!val) return '#f3f4f6'; // empty gray
+        const intensity = Math.max(0.1, val / maxVal);
+        return `rgba(79, 70, 229, ${intensity})`; // Indigo scale
+      };
+
+      if(years.length === 0) return <div className="text-gray-400 text-center py-4">Belum ada data</div>;
+
+      return (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr>
+                <th className="p-2 border">Tahun</th>
+                {months.map(m => <th key={m} className="p-2 border">{m}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {years.map(y => (
+                <tr key={y}>
+                  <td className="p-2 border font-bold text-center">{y}</td>
+                  {months.map((m, i) => {
+                    const val = matrix[y]?.[i+1] || 0;
+                    return (
+                      <td key={i} className="p-2 border text-center relative group" style={{ backgroundColor: getColor(val) }}>
+                        <span className="opacity-0 group-hover:opacity-100 absolute bg-gray-800 text-white text-xs p-1 rounded -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap z-10 transition-opacity">
+                          {formatRp(val)}
+                        </span>
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    };
+
+    // ==========================================
+    // TAB 2: MASTER REKAP
+    // ==========================================
+    const RekapTab = ({ data, rawData, products, reloadData, setPrintMode }) => {
+      const [selectedRecord, setSelectedRecord] = useState(null);
+      const [showAddModal, setShowAddModal] = useState(false);
+
+      const exportCSV = () => {
+        if(data.length === 0) return alert("Tidak ada data untuk diexport");
+        const headers = ["Tanggal", "Nama", "Alamat", "Produk", "Pembayaran", "Nominal", "Kode Transaksi", "Persentase Fee", "Nominal Fee"];
+        const csvContent = "data:text/csv;charset=utf-8," 
+          + headers.join(",") + "\n"
+          + data.map(row => {
+              return `"${row.Tanggal}","${row.Nama}","${row.Alamat}","${row.Produk}","${row.Pembayaran}","${row.Nominal}","${row['Kode Transaksi']}","${row['Persentase Fee']}","${row['Nominal Fee']}"`;
+          }).join("\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "Rekap_Portal_Pena.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
+
+      return (
+        <div className="space-y-6">
+          {/* Top Actions */}
+          <div className="flex flex-wrap gap-2 justify-between items-center no-print bg-white p-4 rounded-xl shadow">
+            <div className="flex gap-2">
+              <button onClick={() => setShowAddModal(true)} className="flex items-center gap-1 bg-indigo-600 text-white px-4 py-2 rounded shadow hover:bg-indigo-700">
+                <IconPlus /> Tambah Record
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button onClick={exportCSV} className="flex items-center gap-1 bg-green-600 text-white px-3 py-1.5 text-sm rounded hover:bg-green-700">
+                <IconDownload /> CSV
+              </button>
+              <button onClick={() => setPrintMode('table')} className="flex items-center gap-1 bg-gray-600 text-white px-3 py-1.5 text-sm rounded hover:bg-gray-700">
+                <IconPrinter /> Print Tabel
+              </button>
+              <button onClick={() => setPrintMode('bukti_perawatan')} className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1.5 text-sm rounded hover:bg-blue-700">
+                <IconPrinter /> Bukti Perawatan
+              </button>
+              <button onClick={() => setPrintMode('bukti_transfer')} className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1.5 text-sm rounded hover:bg-blue-700">
+                <IconPrinter /> Bukti Transfer
+              </button>
+            </div>
+          </div>
+
+          {/* Table */}
+          <div className="bg-white rounded-xl shadow overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-gray-100 text-gray-600 border-b">
+                  <th className="p-4">Tanggal</th>
+                  <th className="p-4">Nama & Alamat</th>
+                  <th className="p-4">Produk</th>
+                  <th className="p-4">Pembayaran</th>
+                  <th className="p-4">Nominal</th>
+                  <th className="p-4">Kode Transaksi</th>
+                  <th className="p-4">Fee (%)</th>
+                  <th className="p-4">Nominal Fee</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((row, idx) => (
+                  <tr key={row.ID || idx} onClick={() => setSelectedRecord(row)} className="border-b hover:bg-indigo-50 cursor-pointer transition-colors">
+                    <td className="p-4 whitespace-nowrap">{row.Tanggal ? new Date(row.Tanggal).toLocaleDateString('id-ID') : '-'}</td>
+                    <td className="p-4">
+                      <div className="font-semibold">{row.Nama}</div>
+                      <div className="text-sm text-gray-500 truncate max-w-xs">{row.Alamat}</div>
+                    </td>
+                    <td className="p-4">{row.Produk}</td>
+                    <td className="p-4">
+                      <span className={`px-2 py-1 rounded text-xs ${row.Pembayaran === 'Transfer' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
+                        {row.Pembayaran}
+                      </span>
+                    </td>
+                    <td className="p-4 font-medium">{formatRp(row.Nominal)}</td>
+                    <td className="p-4 text-sm font-mono">{row['Kode Transaksi']}</td>
+                    <td className="p-4 text-center">{row['Persentase Fee']}%</td>
+                    <td className="p-4">{formatRp(row['Nominal Fee'])}</td>
+                  </tr>
+                ))}
+                {data.length === 0 && (
+                  <tr><td colSpan="8" className="p-8 text-center text-gray-500">Tidak ada data ditemukan</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Modals */}
+          {selectedRecord && (
+            <DetailModal 
+              record={selectedRecord} 
+              onClose={() => setSelectedRecord(null)} 
+              onEdit={() => {
+                setSelectedRecord(null);
+                setShowAddModal(selectedRecord); // Use add modal for edit mode by passing the record
+              }} 
+            />
+          )}
+
+          {showAddModal && (
+            <FormModal 
+              existingRecord={typeof showAddModal === 'object' ? showAddModal : null}
+              products={products}
+              onClose={() => setShowAddModal(false)}
+              onSuccess={reloadData}
+            />
+          )}
+        </div>
+      );
+    };
+
+    // ==========================================
+    // MODALS: Detail & Form
+    // ==========================================
+    const DetailModal = ({ record, onClose, onEdit }) => (
+      <div className="fixed inset-0 z-50 flex items-center justify-center modal-overlay p-4 no-print">
+        <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+          <div className="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-xl">
+            <h3 className="font-bold text-lg">Detail Record</h3>
+            <button onClick={onClose} className="text-gray-500 hover:text-red-500 font-bold">&times; Tutup</button>
+          </div>
+          <div className="p-6 overflow-y-auto flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div><span className="text-gray-500 block text-sm">Tanggal</span><div className="font-medium">{new Date(record.Tanggal).toLocaleDateString('id-ID')}</div></div>
+              <div><span className="text-gray-500 block text-sm">Nama</span><div className="font-medium">{record.Nama}</div></div>
+              <div><span className="text-gray-500 block text-sm">Alamat</span><div className="font-medium">{record.Alamat}</div></div>
+              <div><span className="text-gray-500 block text-sm">Produk</span><div className="font-medium">{record.Produk}</div></div>
+              <div><span className="text-gray-500 block text-sm">Pembayaran</span><div className="font-medium">{record.Pembayaran}</div></div>
+              <div><span className="text-gray-500 block text-sm">Nominal</span><div className="font-medium">{formatRp(record.Nominal)}</div></div>
+              <div><span className="text-gray-500 block text-sm">Kode Transaksi</span><div className="font-medium font-mono">{record['Kode Transaksi']}</div></div>
+              <div><span className="text-gray-500 block text-sm">Fee</span><div className="font-medium">{record['Persentase Fee']}% ({formatRp(record['Nominal Fee'])})</div></div>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <span className="text-gray-500 block text-sm mb-1">Bukti Transfer</span>
+                {record['URL Bukti Transfer'] ? 
+                  <a href={record['URL Bukti Transfer']} target="_blank" className="block border rounded p-1 hover:border-indigo-500"><img src={record['URL Bukti Transfer']} alt="Bukti Transfer" className="w-full h-48 object-cover rounded" /></a> : 
+                  <div className="bg-gray-100 h-48 rounded flex items-center justify-center text-sm text-gray-400">Tidak ada gambar</div>}
+              </div>
+              <div>
+                <span className="text-gray-500 block text-sm mb-1">Bukti Perawatan</span>
+                {record['URL Bukti Perawatan'] ? 
+                  <a href={record['URL Bukti Perawatan']} target="_blank" className="block border rounded p-1 hover:border-indigo-500"><img src={record['URL Bukti Perawatan']} alt="Bukti Perawatan" className="w-full h-48 object-cover rounded" /></a> : 
+                  <div className="bg-gray-100 h-48 rounded flex items-center justify-center text-sm text-gray-400">Tidak ada gambar</div>}
+              </div>
+            </div>
+          </div>
+          <div className="p-4 border-t bg-gray-50 rounded-b-xl flex justify-end gap-2">
+            <button onClick={onEdit} className="bg-indigo-600 text-white px-6 py-2 rounded shadow hover:bg-indigo-700">Edit Data</button>
+          </div>
+        </div>
+      </div>
+    );
+
+    const FormModal = ({ existingRecord, products, onClose, onSuccess }) => {
+      const isEdit = !!existingRecord;
+      const emptyForm = {
+        Tanggal: new Date().toISOString().split('T')[0],
+        Nama: '', Alamat: '', Produk: '', Pembayaran: 'Transfer', 
+        Nominal: '', 'Kode Transaksi': '', 'Persentase Fee': '', 'Nominal Fee': ''
+      };
+      const [formData, setFormData] = useState(isEdit ? {...existingRecord, Tanggal: existingRecord.Tanggal ? new Date(existingRecord.Tanggal).toISOString().split('T')[0] : ''} : emptyForm);
+      const [newProduct, setNewProduct] = useState('');
+      const [files, setFiles] = useState({ transfer: null, perawatan: null });
+      const [submitting, setSubmitting] = useState(false);
+
+      // Auto hitung nominal fee
+      useEffect(() => {
+        const nom = Number(formData.Nominal) || 0;
+        const pct = Number(formData['Persentase Fee']) || 0;
+        if(nom && pct) {
+          setFormData(prev => ({...prev, 'Nominal Fee': (nom * pct / 100).toString()}));
+        }
+      }, [formData.Nominal, formData['Persentase Fee']]);
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        try {
+          // Prepare payload
+          let payload = { ...formData };
+          if(newProduct) payload.Produk = newProduct;
+
+          // Process files if added
+          if(files.transfer) payload.fileBuktiTransfer = await compressImage(files.transfer);
+          if(files.perawatan) payload.fileBuktiPerawatan = await compressImage(files.perawatan);
+
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: isEdit ? 'edit' : 'add', payload }),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' } // text/plain to avoid CORS preflight in GAS
+          });
+          
+          const result = await response.json();
+          if (result.success) {
+            alert(isEdit ? "Berhasil diupdate!" : "Berhasil ditambahkan!");
+            onSuccess(); // Refresh table data
+            if(isEdit) {
+              onClose();
+            } else {
+              // Sesuai requirement: "tidak otomatis tertutup melainkan mengosongkan semua kolom"
+              setFormData(emptyForm);
+              setNewProduct('');
+              setFiles({ transfer: null, perawatan: null });
+              e.target.reset();
+            }
+          } else {
+            alert("Error: " + result.message);
+          }
+        } catch (err) {
+          alert("Gagal menghubungi server.");
+        }
+        setSubmitting(false);
+      };
+
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center modal-overlay p-4 no-print">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+            <div className="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-xl">
+              <h3 className="font-bold text-lg">{isEdit ? 'Edit Record' : 'Tambah Record Baru'}</h3>
+              <button onClick={onClose} disabled={submitting} className="text-gray-500 hover:text-red-500 font-bold">&times; Tutup</button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto flex-1">
+              <form id="recordForm" onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Tanggal</label>
+                  <input type="date" required className="w-full border p-2 rounded" value={formData.Tanggal} onChange={e => setFormData({...formData, Tanggal: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Kode Transaksi</label>
+                  <input type="text" required className="w-full border p-2 rounded uppercase" value={formData['Kode Transaksi']} onChange={e => setFormData({...formData, 'Kode Transaksi': e.target.value})} />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium mb-1">Nama</label>
+                  <input type="text" required className="w-full border p-2 rounded" value={formData.Nama} onChange={e => setFormData({...formData, Nama: e.target.value})} />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium mb-1">Alamat</label>
+                  <textarea required className="w-full border p-2 rounded" rows="2" value={formData.Alamat} onChange={e => setFormData({...formData, Alamat: e.target.value})}></textarea>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Produk</label>
+                  <select className="w-full border p-2 rounded mb-2" value={formData.Produk} onChange={e => setFormData({...formData, Produk: e.target.value})}>
+                    <option value="">Pilih Produk...</option>
+                    {products.map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                  <input type="text" placeholder="Atau ketik produk baru..." className="w-full border p-2 rounded text-sm" value={newProduct} onChange={e => { setNewProduct(e.target.value); setFormData({...formData, Produk: ''}); }} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Pembayaran</label>
+                  <div className="flex gap-4 mt-2">
+                    <label className="flex items-center gap-1"><input type="radio" name="pay" checked={formData.Pembayaran === 'Transfer'} onChange={() => setFormData({...formData, Pembayaran: 'Transfer'})}/> Transfer</label>
+                    <label className="flex items-center gap-1"><input type="radio" name="pay" checked={formData.Pembayaran === 'Tunai'} onChange={() => setFormData({...formData, Pembayaran: 'Tunai'})}/> Tunai</label>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Nominal (IDR)</label>
+                  <input type="number" required className="w-full border p-2 rounded" value={formData.Nominal} onChange={e => setFormData({...formData, Nominal: e.target.value})} />
+                </div>
+                <div className="flex gap-2">
+                  <div className="w-1/3">
+                    <label className="block text-sm font-medium mb-1">Fee (%)</label>
+                    <input type="number" required className="w-full border p-2 rounded" value={formData['Persentase Fee']} onChange={e => setFormData({...formData, 'Persentase Fee': e.target.value})} />
+                  </div>
+                  <div className="w-2/3">
+                    <label className="block text-sm font-medium mb-1">Nominal Fee</label>
+                    <input type="number" readOnly className="w-full border p-2 rounded bg-gray-100" value={formData['Nominal Fee']} />
+                  </div>
+                </div>
+                
+                <div className="border-t pt-4 mt-2 md:col-span-2 grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Upload Bukti Transfer (Opsional)</label>
+                    <input type="file" accept="image/*" className="w-full text-sm" onChange={e => setFiles({...files, transfer: e.target.files[0]})} />
+                    {isEdit && formData['URL Bukti Transfer'] && !files.transfer && <span className="text-xs text-blue-500 mt-1 block">Gambar sudah ada. Upload untuk mengganti.</span>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Upload Bukti Perawatan (Opsional)</label>
+                    <input type="file" accept="image/*" className="w-full text-sm" onChange={e => setFiles({...files, perawatan: e.target.files[0]})} />
+                    {isEdit && formData['URL Bukti Perawatan'] && !files.perawatan && <span className="text-xs text-blue-500 mt-1 block">Gambar sudah ada. Upload untuk mengganti.</span>}
+                  </div>
+                </div>
+              </form>
+            </div>
+            
+            <div className="p-4 border-t bg-gray-50 rounded-b-xl flex justify-end gap-2">
+              <button type="button" onClick={onClose} disabled={submitting} className="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded">Tutup</button>
+              <button form="recordForm" type="submit" disabled={submitting} className={`px-6 py-2 rounded text-white shadow ${submitting ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}>
+                {submitting ? 'Menyimpan...' : (isEdit ? 'Update Data' : 'Simpan & Lanjut')}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // ==========================================
+    // PRINT VIEWS
+    // ==========================================
+    const DashboardPrintView = ({ data, filterBulan, filterTahun }) => (
+      <div>
+        <h1 className="text-2xl font-bold text-center mb-6">Laporan Dashboard Analitik Portal Pena</h1>
+        <p className="text-center mb-6 text-gray-600">Periode: {filterBulan === 'Semua' ? 'Sepanjang Tahun' : `Bulan ${filterBulan}`} - {filterTahun}</p>
+        <DashboardTab data={data} setPrintMode={()=>{}} />
+      </div>
+    );
+
+    const TablePrintView = ({ data, filterBulan, filterTahun }) => (
+      <div>
+        <h1 className="text-2xl font-bold text-center mb-2">Master Rekap Laporan Portal Pena</h1>
+        <p className="text-center mb-6 text-gray-600">Periode: {filterBulan === 'Semua' ? 'Sepanjang Tahun' : `Bulan ${filterBulan}`} - {filterTahun}</p>
+        <table className="w-full text-left border-collapse border border-gray-300 text-sm">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="p-2 border">Tanggal</th>
+              <th className="p-2 border">Nama</th>
+              <th className="p-2 border">Produk</th>
+              <th className="p-2 border">Pembayaran</th>
+              <th className="p-2 border">Nominal</th>
+              <th className="p-2 border">Kode Transaksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row, idx) => (
+              <tr key={idx}>
+                <td className="p-2 border">{row.Tanggal ? new Date(row.Tanggal).toLocaleDateString('id-ID') : '-'}</td>
+                <td className="p-2 border">{row.Nama} - {row.Alamat}</td>
+                <td className="p-2 border">{row.Produk}</td>
+                <td className="p-2 border">{row.Pembayaran}</td>
+                <td className="p-2 border">{formatRp(row.Nominal)}</td>
+                <td className="p-2 border">{row['Kode Transaksi']}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+
+    const BuktiPrintView = ({ data, type }) => {
+      // Filter hanya yang memiliki gambar
+      const urlKey = type === 'perawatan' ? 'URL Bukti Perawatan' : 'URL Bukti Transfer';
+      const validData = data.filter(d => d[urlKey] && d[urlKey].trim() !== "");
+
+      return (
+        <div>
+          <h1 className="text-2xl font-bold text-center mb-6 capitalize">Cetak Bukti {type}</h1>
+          <div className="print-card-layout">
+            {validData.map((row, idx) => (
+              <div key={idx} className="bukti-card">
+                <img src={row[urlKey]} className="bukti-img" alt={`Bukti ${type}`} />
+                <div className="font-bold text-sm truncate">{row.Nama}</div>
+                <div className="text-xs text-gray-600 truncate">{row.Alamat}</div>
+                <div className="mt-2 text-xs font-mono bg-gray-100 p-1 rounded inline-block">{row['Kode Transaksi']}</div>
+              </div>
+            ))}
+            {validData.length === 0 && <p className="col-span-3 text-center text-gray-500">Tidak ada gambar bukti pada periode ini.</p>}
+          </div>
+        </div>
+      );
+    };
+
+    // ==========================================
+    // RENDER APP
+    // ==========================================
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
