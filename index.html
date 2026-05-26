@@ -20,12 +20,10 @@
 
   <style>
     @media print {
-      /* Memaksa browser mencetak warna background */
       * { 
         -webkit-print-color-adjust: exact !important; 
         print-color-adjust: exact !important; 
       }
-      
       body * { visibility: hidden; }
       #print-area, #print-area * { visibility: visible; }
       #print-area { position: absolute; left: 0; top: 0; width: 100%; }
@@ -82,7 +80,9 @@
     const IconPrinter = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>;
     const IconDownload = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>;
     const IconPlus = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
+    const IconTrash = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>;
 
+    // Helpers
     const formatRp = (angka) => {
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka || 0);
     };
@@ -94,6 +94,17 @@
         return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
       }
       return url;
+    };
+
+    // FIX TANGGAL: Ekstrak YYYY-MM-DD secara aman sesuai zona waktu komputer lokal (mencegah mundur 1 hari)
+    const extractLocalDate = (dateString) => {
+      if (!dateString) return '';
+      const d = new Date(dateString);
+      if (isNaN(d.getTime())) return ''; 
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
     };
 
     const compressImage = (file) => {
@@ -161,7 +172,6 @@
           return monthMatch && yearMatch;
         });
 
-        // FIX: Menambahkan sorting berdasarkan Tanggal (Ascending: Lama -> Baru)
         return filtered.sort((a, b) => {
             const dateA = new Date(a.Tanggal).getTime();
             const dateB = new Date(b.Tanggal).getTime();
@@ -436,6 +446,7 @@
     const RekapTab = ({ data, rawData, products, reloadData, setPrintMode }) => {
       const [selectedRecord, setSelectedRecord] = useState(null);
       const [showAddModal, setShowAddModal] = useState(false);
+      const [isDeleting, setIsDeleting] = useState(false);
 
       const exportCSV = () => {
         if(data.length === 0) return alert("Tidak ada data untuk diexport");
@@ -452,6 +463,31 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+      };
+
+      // FUNGSI UNTUK MENGHAPUS DATA
+      const handleDelete = async (id) => {
+        if(!window.confirm("PERINGATAN!\n\nApakah Anda yakin ingin menghapus data ini secara permanen? Data yang dihapus tidak dapat dikembalikan.")) return;
+        
+        setIsDeleting(true);
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'delete', payload: { ID: id } }),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+          });
+          const result = await response.json();
+          if (result.success) {
+            alert("Data berhasil dihapus!");
+            setSelectedRecord(null); // Tutup modal detail
+            reloadData(); // Segarkan tabel
+          } else {
+            alert("Gagal menghapus: " + result.message);
+          }
+        } catch (err) {
+          alert("Gagal menghubungi server saat menghapus data.");
+        }
+        setIsDeleting(false);
       };
 
       return (
@@ -526,7 +562,9 @@
               onEdit={() => {
                 setSelectedRecord(null);
                 setShowAddModal(selectedRecord); 
-              }} 
+              }}
+              onDelete={() => handleDelete(selectedRecord.ID)}
+              isDeleting={isDeleting}
             />
           )}
 
@@ -542,12 +580,12 @@
       );
     };
 
-    const DetailModal = ({ record, onClose, onEdit }) => (
+    const DetailModal = ({ record, onClose, onEdit, onDelete, isDeleting }) => (
       <div className="fixed inset-0 z-50 flex items-center justify-center modal-overlay p-4 no-print">
         <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col">
           <div className="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-xl">
             <h3 className="font-bold text-lg">Detail Record</h3>
-            <button onClick={onClose} className="text-gray-500 hover:text-red-500 font-bold">&times; Tutup</button>
+            <button onClick={onClose} disabled={isDeleting} className="text-gray-500 hover:text-red-500 font-bold">&times; Tutup</button>
           </div>
           <div className="p-6 overflow-y-auto flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
@@ -579,8 +617,14 @@
               </div>
             </div>
           </div>
-          <div className="p-4 border-t bg-gray-50 rounded-b-xl flex justify-end gap-2">
-            <button onClick={onEdit} className="bg-indigo-600 text-white px-6 py-2 rounded shadow hover:bg-indigo-700">Edit Data</button>
+          <div className="p-4 border-t bg-gray-50 rounded-b-xl flex justify-between items-center gap-2">
+            {/* FIX: Menambahkan Tombol Hapus */}
+            <button onClick={onDelete} disabled={isDeleting} className={`flex items-center gap-1 text-red-600 hover:bg-red-50 px-4 py-2 rounded transition-colors ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              <IconTrash /> {isDeleting ? 'Menghapus...' : 'Hapus Data'}
+            </button>
+            <div className="flex gap-2">
+              <button onClick={onEdit} disabled={isDeleting} className="bg-indigo-600 text-white px-6 py-2 rounded shadow hover:bg-indigo-700 disabled:opacity-50">Edit Data</button>
+            </div>
           </div>
         </div>
       </div>
@@ -593,7 +637,9 @@
         Nama: '', Alamat: '', Produk: '', Pembayaran: 'Transfer', 
         Nominal: '', 'Kode Transaksi': '', 'Persentase Fee': '', 'Nominal Fee': ''
       };
-      const [formData, setFormData] = useState(isEdit ? {...existingRecord, Tanggal: existingRecord.Tanggal ? new Date(existingRecord.Tanggal).toISOString().split('T')[0] : ''} : emptyForm);
+
+      // FIX TANGGAL: Menggunakan helper extractLocalDate agar tanggal tidak bergeser H-1
+      const [formData, setFormData] = useState(isEdit ? {...existingRecord, Tanggal: extractLocalDate(existingRecord.Tanggal)} : emptyForm);
       const [newProduct, setNewProduct] = useState('');
       const [files, setFiles] = useState({ transfer: null, perawatan: null });
       const [submitting, setSubmitting] = useState(false);
