@@ -1,9 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Laporan Hasil Pena</title>
+  <title>Portal Laporan Hasil Pena Anggih</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -45,7 +46,7 @@
       }
       .bukti-img {
         aspect-ratio: 9/16;
-        object-stretch: cover;
+        object-shrink: cover;
         width: 100%;
         border-radius: 6px;
         margin-bottom: 10px;
@@ -153,12 +154,19 @@
       useEffect(() => { fetchData(); }, []);
 
       const filteredData = useMemo(() => {
-        return data.filter(item => {
+        let filtered = data.filter(item => {
           if(!item.Tanggal) return false;
           const date = new Date(item.Tanggal);
           const monthMatch = filterBulan === 'Semua' || date.getMonth() + 1 === parseInt(filterBulan);
           const yearMatch = filterTahun === 'Semua' || date.getFullYear() === parseInt(filterTahun);
           return monthMatch && yearMatch;
+        });
+
+        // FIX: Menambahkan sorting berdasarkan Tanggal (Ascending: Lama -> Baru)
+        return filtered.sort((a, b) => {
+            const dateA = new Date(a.Tanggal).getTime();
+            const dateB = new Date(b.Tanggal).getTime();
+            return dateA - dateB;
         });
       }, [data, filterBulan, filterTahun]);
 
@@ -179,7 +187,9 @@
       return (
         <div className="flex h-screen overflow-hidden bg-gray-100">
           <aside className="w-64 bg-indigo-900 text-white flex flex-col no-print">
-            <div className="p-5 font-bold text-xl border-b border-indigo-800">Portal Pena Ann Gi Hyun</div>
+            <div className="p-6 font-bold text-xl border-b border-indigo-800">
+              Portal Pena Ann Gi Hyun
+            </div>
             <nav className="flex-1 p-4 space-y-2">
               <button 
                 onClick={() => setActiveTab('dashboard')} 
@@ -727,7 +737,6 @@
     );
 
     const TablePrintView = ({ data, filterBulan, filterTahun }) => {
-      // FIX: Kalkulasi Total untuk Nominal dan Nominal Fee
       const totalNominal = data.reduce((sum, row) => sum + (Number(row.Nominal) || 0), 0);
       const totalNominalFee = data.reduce((sum, row) => sum + (Number(row['Nominal Fee']) || 0), 0);
 
@@ -773,11 +782,10 @@
                 </tr>
               )}
             </tbody>
-            {/* FIX: Menambahkan Footer untuk Total Row */}
             {data.length > 0 && (
               <tfoot className="bg-gray-100 font-bold">
                 <tr>
-                  <td colSpan="4" className="p-2 border text-right">TOTAL:</td>
+                  <td colSpan="4" className="p-2 border text-right">TOTAL KESELURUHAN :</td>
                   <td className="p-2 border whitespace-nowrap text-indigo-900">{formatRp(totalNominal)}</td>
                   <td colSpan="2" className="p-2 border bg-gray-50"></td>
                   <td className="p-2 border whitespace-nowrap text-indigo-900">{formatRp(totalNominalFee)}</td>
@@ -795,7 +803,7 @@
 
       return (
         <div>
-          <h1 className="text-2xl font-bold text-center mb-2 capitalize">Bukti {type}</h1>
+          <h1 className="text-2xl font-bold text-center mb-2 capitalize">Bukti {type} Anggih Saeful Khiyar</h1>
           <p className="text-center mb-6 text-gray-600">
             Periode: {filterBulan === 'Semua' ? 'Sepanjang Tahun' : NAMA_BULAN[parseInt(filterBulan) - 1]} - {filterTahun}
           </p>
@@ -819,3 +827,6 @@
   </script>
 </body>
 </html>
+
+
+```
