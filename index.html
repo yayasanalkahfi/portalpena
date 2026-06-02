@@ -719,11 +719,11 @@
               <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Tanggal Transaksi</span><div className="font-semibold text-gray-800">{new Date(record.Tanggal).toLocaleDateString('id-ID', {weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'})}</div></div>
               <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Nama Pelanggan</span><div className="font-semibold text-gray-800">{record.Nama}</div></div>
               <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Alamat Lengkap</span><div className="font-semibold text-gray-800">{record.Alamat}</div></div>
-              <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Produk</span><div className="font-medium text-indigo-700">{record.Produk}</div></div>
-              <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Metode Pembayaran</span><div className="font-medium text-gray-800 bg-indigo-50 px-2 py-0.5 rounded">{record.Pembayaran}</div></div>
-              <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Nominal</span><div className="font-semibold text-xl text-gray-800">{formatRp(record.Nominal)}</div></div>
+              <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Produk</span><div className="font-medium text-gray-800">{record.Produk}</div></div>
+              <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Metode Pembayaran</span><div className="font-medium text-gray-800">{record.Pembayaran}</div></div>
+              <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Nominal</span><div className="font-semibold text-gray-800">{formatRp(record.Nominal)}</div></div>
               <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Kode Transaksi</span><div className="font-mono text-sm bg-gray-100 px-2 py-1 rounded text-gray-700">{record['Kode Transaksi']}</div></div>
-              <div className="flex pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Fee</span><div className="font-semibold text-gray-800">{record['Persentase Fee']}% <span className="text-gray-400 font-normal ml-1">({formatRp(record['Nominal Fee'])})</span></div></div>
+              <div className="flex pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Fee</span><div className="font-semibold text-gray-800">{record['Persentase Fee']}% <span className="text-gray-800 font-normal ml-1">({formatRp(record['Nominal Fee'])})</span></div></div>
             </div>
             <div className="space-y-6">
               <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
