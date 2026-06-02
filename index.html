@@ -2,21 +2,21 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Portal Laporan Hasil Pena</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laporan Pena Anggih</title>
+  
   <!-- Tailwind CSS -->
-  <script src="<https://cdn.tailwindcss.com>"></script>
-
+  <script src="https://cdn.tailwindcss.com"></script>
+  
   <!-- React & ReactDOM -->
-  <script crossorigin src="<https://unpkg.com/react@18/umd/react.production.min.js>"></script>
-  <script crossorigin src="<https://unpkg.com/react-dom@18/umd/react-dom.production.min.js>"></script>
-
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
   <!-- Babel for JSX -->
-  <script src="<https://unpkg.com/@babel/standalone/babel.min.js>"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <!-- Chart.js -->
-  <script src="<https://cdn.jsdelivr.net/npm/chart.js>"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     /* CSS Tambahan untuk Animasi Background Abstrak */
@@ -36,27 +36,11 @@
       animation-delay: 4s;
     }
 
-    /* Memperbaiki Scrollbar di Mobile */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 10px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
-
     /* CSS Print */
     @media print {
-      * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
+      * { 
+        -webkit-print-color-adjust: exact !important; 
+        print-color-adjust: exact !important; 
       }
       body * { visibility: hidden; }
       #print-area, #print-area * { visibility: visible; }
@@ -77,7 +61,7 @@
       }
       .bukti-img {
         aspect-ratio: 9/16;
-        object-fit: cover;
+        object-shrink: cover;
         width: 100%;
         border-radius: 6px;
         margin-bottom: 10px;
@@ -101,27 +85,25 @@
     // ==========================================
     // CONFIGURATION
     // ==========================================
-    const API_URL = "URL_WEB_APP_ANDA_DISINI";
-
+    const API_URL = "https://script.google.com/macros/s/AKfycbyg0lQb5kO7rtCl2xC9qyiMWU2_0wt0xGPkyWogXgYnYmmaZGyDz46Cw-RkHEwo8B5Yxw/exec";
+    
     // UBAH PIN ATAU PASSWORD ANDA DI SINI
-    const APP_PIN = "123456";
+    const APP_PIN = "4nn61hyun"; 
 
     // Data Referensi
     const NAMA_BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
     // Icons
-    const IconBarChart = () => <svg xmlns="<http://www.w3.org/2000/svg>" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>;
-    const IconList = () => <svg xmlns="<http://www.w3.org/2000/svg>" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>;
-    const IconWallet = () => <svg xmlns="<http://www.w3.org/2000/svg>" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>;
-    const IconBank = () => <svg xmlns="<http://www.w3.org/2000/svg>" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>;
-    const IconPrinter = () => <svg xmlns="<http://www.w3.org/2000/svg>" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>;
-    const IconDownload = () => <svg xmlns="<http://www.w3.org/2000/svg>" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>;
-    const IconPlus = () => <svg xmlns="<http://www.w3.org/2000/svg>" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
-    const IconTrash = () => <svg xmlns="<http://www.w3.org/2000/svg>" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>;
-    const IconLock = () => <svg xmlns="<http://www.w3.org/2000/svg>" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>;
-    const IconLogout = () => <svg xmlns="<http://www.w3.org/2000/svg>" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>;
-    const IconMenu = () => <svg xmlns="<http://www.w3.org/2000/svg>" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>;
-    const IconX = () => <svg xmlns="<http://www.w3.org/2000/svg>" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>;
+    const IconBarChart = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>;
+    const IconList = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>;
+    const IconWallet = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>;
+    const IconBank = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>;
+    const IconPrinter = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>;
+    const IconDownload = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>;
+    const IconPlus = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
+    const IconTrash = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>;
+    const IconLock = () => <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>;
+    const IconLogout = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>;
 
     // Helpers
     const formatRp = (angka) => {
@@ -140,7 +122,7 @@
     const extractLocalDate = (dateString) => {
       if (!dateString) return '';
       const d = new Date(dateString);
-      if (isNaN(d.getTime())) return '';
+      if (isNaN(d.getTime())) return ''; 
       const year = d.getFullYear();
       const month = String(d.getMonth() + 1).padStart(2, '0');
       const day = String(d.getDate()).padStart(2, '0');
@@ -156,13 +138,13 @@
           img.src = event.target.result;
           img.onload = () => {
             const canvas = document.createElement('canvas');
-            const MAX_WIDTH = 800;
+            const MAX_WIDTH = 800; 
             const scaleSize = MAX_WIDTH / img.width;
             canvas.width = MAX_WIDTH;
             canvas.height = img.height * scaleSize;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.6); 
             resolve({ name: file.name, base64: dataUrl });
           }
         };
@@ -170,7 +152,7 @@
     };
 
     // ==========================================
-    // LOGIN COMPONENT
+    // LOGIN COMPONENT - DESAIN BARU
     // ==========================================
     const LoginScreen = ({ onLogin }) => {
       const [pin, setPin] = useState('');
@@ -187,49 +169,48 @@
       };
 
       return (
-        <div className="relative flex items-center justify-center min-h-screen overflow-hidden bg-gradient-to-br from-blue-900 via-indigo-900 to-slate-900 p-4">
-
+        <div className="relative flex items-center justify-center min-h-screen overflow-hidden bg-gradient-to-br from-blue-900 via-indigo-900 to-slate-900">
+          
           {/* Efek Background Abstrak */}
-          <div className="absolute top-0 -left-10 w-64 md:w-96 h-64 md:h-96 bg-blue-600 rounded-full mix-blend-overlay filter blur-[80px] md:blur-[100px] opacity-70 animate-blob"></div>
-          <div className="absolute top-10 -right-10 w-64 md:w-96 h-64 md:h-96 bg-cyan-400 rounded-full mix-blend-overlay filter blur-[80px] md:blur-[100px] opacity-70 animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-20 left-10 md:left-32 w-64 md:w-96 h-64 md:h-96 bg-indigo-500 rounded-full mix-blend-overlay filter blur-[80px] md:blur-[100px] opacity-70 animate-blob animation-delay-4000"></div>
+          <div className="absolute top-0 -left-10 w-96 h-96 bg-blue-600 rounded-full mix-blend-overlay filter blur-[100px] opacity-70 animate-blob"></div>
+          <div className="absolute top-10 -right-10 w-96 h-96 bg-cyan-400 rounded-full mix-blend-overlay filter blur-[100px] opacity-70 animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-20 left-32 w-96 h-96 bg-indigo-500 rounded-full mix-blend-overlay filter blur-[100px] opacity-70 animate-blob animation-delay-4000"></div>
 
           {/* Kartu Login */}
-          <div className="relative z-10 bg-white/95 backdrop-blur-md p-6 sm:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.3)] w-full max-w-sm border border-white/20 transform transition-all">
+          <div className="relative z-10 bg-white/95 backdrop-blur-md p-8 sm:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.3)] w-full max-w-sm border border-white/20 transform transition-all">
             <div className="flex justify-center mb-4 text-blue-600 drop-shadow-md">
               <IconLock />
             </div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-center text-gray-800 mb-2">Portal Pena</h2>
-            <p className="text-center text-gray-500 mb-8 text-sm">Silakan masukkan akses PIN Anda</p>
-
+            <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-2">Portal Pena Ann Gi Hyun</h2>
+            <p className="text-center text-gray-500 mb-8 text-sm">Silakan masukkan kode akses</p>
+            
             {error && (
               <div className="bg-red-50 text-red-600 p-3 rounded-xl mb-6 text-sm text-center font-medium border border-red-100 animate-pulse">
                 {error}
               </div>
             )}
-
+            
             <form onSubmit={handleSubmit}>
               <div className="mb-6">
                 <input
                   type="password"
-                  inputMode="numeric"
                   value={pin}
                   onChange={(e) => setPin(e.target.value)}
-                  className="w-full border-2 border-gray-200 p-3 md:p-4 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-center tracking-[0.5em] text-xl md:text-2xl bg-white transition-all shadow-inner font-mono text-gray-700"
+                  className="w-full border-2 border-gray-200 p-4 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-center tracking-[0.5em] text-2xl bg-white transition-all shadow-inner font-mono text-gray-700"
                   placeholder="••••••"
                   required
                   autoFocus
                 />
               </div>
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-3.5 md:py-4 px-4 rounded-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg transform hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-blue-500/50">
-                Masuk Sistem
+              <button 
+                type="submit" 
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-4 px-4 rounded-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg transform hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-blue-500/50">
+                Masuk
               </button>
             </form>
-
+            
             <div className="mt-8 text-center">
-              <p className="text-[10px] md:text-xs text-gray-400 font-medium tracking-wide uppercase">Secured by Portal Pena &copy; {new Date().getFullYear()}</p>
+              <p className="text-xs text-gray-400 font-medium tracking-wide uppercase">Dilindungi oleh Divisi Pena &copy; {new Date().getFullYear()}</p>
             </div>
           </div>
         </div>
@@ -240,8 +221,8 @@
     // MAIN APP COMPONENT
     // ==========================================
     const App = () => {
+      // Auth State
       const [isAuthenticated, setIsAuthenticated] = useState(() => sessionStorage.getItem('auth_pena') === 'true');
-      const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile Menu State
 
       const [activeTab, setActiveTab] = useState('dashboard');
       const [data, setData] = useState([]);
@@ -274,9 +255,9 @@
         setLoading(false);
       };
 
-      useEffect(() => {
+      useEffect(() => { 
         if(isAuthenticated) {
-          fetchData();
+          fetchData(); 
         }
       }, [isAuthenticated]);
 
@@ -289,13 +270,8 @@
         if(window.confirm("Apakah Anda yakin ingin keluar dari Portal Pena?")) {
           setIsAuthenticated(false);
           sessionStorage.removeItem('auth_pena');
-          setData([]);
+          setData([]); 
         }
-      };
-
-      const handleTabChange = (tab) => {
-        setActiveTab(tab);
-        setIsMobileMenuOpen(false); // Tutup menu di HP saat tab diklik
       };
 
       const filteredData = useMemo(() => {
@@ -333,76 +309,56 @@
       }
 
       return (
-        <div className="flex h-screen overflow-hidden bg-gray-50 md:bg-gray-100">
-
-          {/* Overlay Mobile Sidebar */}
-          {isMobileMenuOpen && (
-            <div
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden transition-opacity"
-              onClick={() => setIsMobileMenuOpen(false)}
-            ></div>
-          )}
-
-          {/* Sidebar */}
-          <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-indigo-900 text-white flex flex-col no-print shadow-2xl md:shadow-xl transform transition-transform duration-300 md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-            <div className="p-5 md:p-6 font-bold text-xl md:text-2xl border-b border-indigo-800 tracking-wide flex justify-between items-center">
-              <span>Portal Pena</span>
-              <button onClick={() => setIsMobileMenuOpen(false)} className="md:hidden text-indigo-200 hover:text-white">
-                <IconX />
-              </button>
+        <div className="flex h-screen overflow-hidden bg-gray-100">
+          <aside className="w-64 bg-indigo-900 text-white flex flex-col no-print shadow-xl z-20">
+            <div className="p-6 font-bold text-2xl border-b border-indigo-800 tracking-wide">
+              Portal Pena Ann Gi Hyun
             </div>
             <nav className="flex-1 p-4 space-y-2 mt-2">
-              <button
-                onClick={() => handleTabChange('dashboard')}
+              <button 
+                onClick={() => setActiveTab('dashboard')} 
                 className={`w-full flex items-center p-3 rounded-xl transition-all duration-200 ${activeTab === 'dashboard' ? 'bg-indigo-600 shadow-md font-semibold' : 'hover:bg-indigo-800 text-indigo-100'}`}>
                 <span className="mr-3"><IconBarChart /></span> Dashboard
               </button>
-              <button
-                onClick={() => handleTabChange('rekap')}
+              <button 
+                onClick={() => setActiveTab('rekap')} 
                 className={`w-full flex items-center p-3 rounded-xl transition-all duration-200 ${activeTab === 'rekap' ? 'bg-indigo-600 shadow-md font-semibold' : 'hover:bg-indigo-800 text-indigo-100'}`}>
                 <span className="mr-3"><IconList /></span> Master Rekap
               </button>
             </nav>
             <div className="p-4 border-t border-indigo-800">
-              <button
-                onClick={handleLogout}
+              <button 
+                onClick={handleLogout} 
                 className="w-full flex items-center justify-center p-3 rounded-xl transition-colors text-indigo-200 hover:bg-red-500 hover:text-white font-medium">
                 <span className="mr-2"><IconLogout /></span> Keluar
               </button>
             </div>
           </aside>
 
-          {/* Main Content */}
-          <main className="flex-1 flex flex-col h-screen overflow-y-auto relative w-full">
-            {/* Header / Navbar */}
-            <header className="bg-white shadow-sm p-4 md:px-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 no-print sticky top-0 z-10">
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <button className="md:hidden text-gray-700 bg-gray-100 p-2 rounded-lg hover:bg-gray-200 transition-colors" onClick={() => setIsMobileMenuOpen(true)}>
-                  <IconMenu />
-                </button>
-                <h2 className="text-xl md:text-2xl font-extrabold text-gray-800 tracking-tight">
-                  {activeTab === 'dashboard' ? 'Dashboard Analitik' : 'Master Rekap'}
-                </h2>
-              </div>
-              <div className="flex gap-2 items-center w-full sm:w-auto">
-                <select className="flex-1 sm:flex-none border-gray-300 bg-gray-50 border p-2 md:p-2.5 rounded-lg text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm cursor-pointer" value={filterBulan} onChange={(e) => setFilterBulan(e.target.value)}>
-                  <option value="Semua">Tahun Ini</option>
+          <main className="flex-1 flex flex-col h-screen overflow-y-auto">
+            <header className="bg-white shadow-sm p-4 px-8 flex justify-between items-center no-print sticky top-0 z-10">
+              <h2 className="text-2xl font-semibold text-gray-800 tracking-tight">
+                {activeTab === 'dashboard' ? 'Dashboard Analitik' : 'Master Rekap'}
+              </h2>
+              <div className="flex gap-3 items-center">
+                <select className="border-gray-300 bg-gray-50 border p-2.5 rounded-lg text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm cursor-pointer" value={filterBulan} onChange={(e) => setFilterBulan(e.target.value)}>
+                  <option value="Semua">Sepanjang Tahun</option>
                   {NAMA_BULAN.map((bulan, i) => <option key={i} value={i+1}>{bulan}</option>)}
                 </select>
-                <select className="flex-1 sm:flex-none border-gray-300 bg-gray-50 border p-2 md:p-2.5 rounded-lg text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm cursor-pointer" value={filterTahun} onChange={(e) => setFilterTahun(e.target.value)}>
-                  <option value="Semua">Semua</option>
+                <select className="border-gray-300 bg-gray-50 border p-2.5 rounded-lg text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm cursor-pointer" value={filterTahun} onChange={(e) => setFilterTahun(e.target.value)}>
+                  <option value="Semua">Semua Tahun</option>
                   {availableYears.map(y => <option key={y} value={y}>{y}</option>)}
                 </select>
               </div>
             </header>
 
-            <div className="p-4 md:p-8">
-              {error && <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-sm mb-6 flex items-center text-sm md:text-base">
+            <div className="p-8">
+              {error && <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-sm mb-6 flex items-center">
                 <span className="font-medium">{error}</span>
               </div>}
               {loading && !data.length ? (
                 <div className="flex justify-center items-center h-64">
-                  <div className="animate-spin rounded-full h-10 w-10 md:h-12 md:w-12 border-b-2 border-indigo-600"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
                 </div>
               ) : (
                 <>
@@ -413,9 +369,8 @@
             </div>
           </main>
 
-          {/* Area Print (Hidden on screen, visible on print) */}
           {printMode && (
-            <div id="print-area" className="bg-white p-4 md:p-8">
+            <div id="print-area" className="bg-white p-8">
               {printMode === 'dashboard' && <DashboardPrintView data={filteredData} filterBulan={filterBulan} filterTahun={filterTahun} />}
               {printMode === 'table' && <TablePrintView data={filteredData} filterBulan={filterBulan} filterTahun={filterTahun} />}
               {printMode === 'bukti_perawatan' && <BuktiPrintView data={filteredData} type="perawatan" filterBulan={filterBulan} filterTahun={filterTahun} />}
@@ -434,53 +389,53 @@
       const handleExportPDF = () => window.print();
 
       return (
-        <div className="space-y-4 md:space-y-6">
-          <div className="flex flex-col sm:flex-row justify-end gap-2 md:gap-3 no-print w-full">
-            <button onClick={() => setPrintMode('dashboard')} className="w-full sm:w-auto flex justify-center items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-lg shadow-md hover:bg-indigo-700 transition font-medium text-sm md:text-base">
-              <IconPrinter /> Cetak Dash.
+        <div className="space-y-6">
+          <div className="flex justify-end gap-3 no-print">
+            <button onClick={() => setPrintMode('dashboard')} className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-lg shadow-md hover:bg-indigo-700 transition font-medium">
+              <IconPrinter /> Print Dashboard
             </button>
-            <button onClick={handleExportPDF} className="w-full sm:w-auto flex justify-center items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-lg shadow-md hover:bg-emerald-700 transition font-medium text-sm md:text-base">
-              <IconDownload /> Simpan PDF
+            <button onClick={handleExportPDF} className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-lg shadow-md hover:bg-emerald-700 transition font-medium">
+              <IconDownload /> Export PDF
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 border-l-4 border-l-indigo-500 hover:shadow-md transition">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 border-l-4 border-l-indigo-500 hover:shadow-md transition">
               <div className="flex items-center justify-between text-gray-500 mb-2">
-                <h3 className="font-semibold text-base md:text-lg text-gray-600">Hasil Makro</h3>
+                <h3 className="font-semibold text-lg text-gray-600">Hasil Makro</h3>
                 <div className="bg-indigo-50 p-2 rounded-lg text-indigo-500"><IconWallet /></div>
               </div>
-              <p className="text-2xl md:text-3xl font-extrabold text-gray-800 mt-2">{formatRp(hasilMakro)}</p>
+              <p className="text-3xl font-extrabold text-gray-800 mt-2">{formatRp(hasilMakro)}</p>
             </div>
-            <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 border-l-4 border-l-blue-500 hover:shadow-md transition">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 border-l-4 border-l-blue-500 hover:shadow-md transition">
               <div className="flex items-center justify-between text-gray-500 mb-2">
-                <h3 className="font-semibold text-base md:text-lg text-gray-600">Hasil Transfer</h3>
+                <h3 className="font-semibold text-lg text-gray-600">Hasil Transfer</h3>
                 <div className="bg-blue-50 p-2 rounded-lg text-blue-500"><IconBank /></div>
               </div>
-              <p className="text-2xl md:text-3xl font-extrabold text-gray-800 mt-2">{formatRp(hasilTransfer)}</p>
+              <p className="text-3xl font-extrabold text-gray-800 mt-2">{formatRp(hasilTransfer)}</p>
             </div>
-            <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 border-l-4 border-l-emerald-500 hover:shadow-md transition">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 border-l-4 border-l-emerald-500 hover:shadow-md transition">
               <div className="flex items-center justify-between text-gray-500 mb-2">
-                <h3 className="font-semibold text-base md:text-lg text-gray-600">Hasil Tunai</h3>
+                <h3 className="font-semibold text-lg text-gray-600">Hasil Tunai</h3>
                 <div className="bg-emerald-50 p-2 rounded-lg text-emerald-500"><IconWallet /></div>
               </div>
-              <p className="text-2xl md:text-3xl font-extrabold text-gray-800 mt-2">{formatRp(hasilTunai)}</p>
+              <p className="text-3xl font-extrabold text-gray-800 mt-2">{formatRp(hasilTunai)}</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-            <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100 chart-container">
-              <h3 className="font-bold mb-4 md:mb-6 text-gray-800 text-base md:text-lg">Trend Line Hasil Penjualan</h3>
-              <div className="relative w-full h-48 md:h-64"><TrendChart data={data} /></div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 chart-container">
+              <h3 className="font-bold mb-6 text-gray-800 text-lg">Trend Line Hasil Penjualan</h3>
+              <TrendChart data={data} />
             </div>
-            <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100 chart-container">
-              <h3 className="font-bold mb-4 md:mb-6 text-gray-800 text-base md:text-lg">Produk Terlaris</h3>
-              <div className="relative w-full h-48 md:h-64"><ProductChart data={data} /></div>
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 chart-container">
+              <h3 className="font-bold mb-6 text-gray-800 text-lg">Produk Terlaris</h3>
+              <ProductChart data={data} />
             </div>
           </div>
 
-          <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100 chart-container w-full">
-            <h3 className="font-bold mb-4 md:mb-6 text-gray-800 text-base md:text-lg">Heat Map: Distribusi Hasil Bulanan</h3>
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 chart-container">
+            <h3 className="font-bold mb-6 text-gray-800 text-lg">Heat Map: Distribusi Hasil Bulanan</h3>
             <HeatMapChart data={data} />
           </div>
         </div>
@@ -515,12 +470,12 @@
           data: {
             labels,
             datasets: [
-              { label: 'Makro', data: dMakro, borderColor: '#4f46e5', backgroundColor: '#4f46e5', tension: 0.4, borderWidth: 2 },
+              { label: 'Makro', data: dMakro, borderColor: '#4f46e5', backgroundColor: '#4f46e5', tension: 0.4, borderWidth: 3 },
               { label: 'Transfer', data: dTransfer, borderColor: '#3b82f6', backgroundColor: '#3b82f6', tension: 0.4, borderWidth: 2, borderDash: [5, 5] },
               { label: 'Tunai', data: dTunai, borderColor: '#10b981', backgroundColor: '#10b981', tension: 0.4, borderWidth: 2, borderDash: [5, 5] }
             ]
           },
-          options: { maintainAspectRatio: false, responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: {size: 11} } } }, interaction: { mode: 'index', intersect: false } }
+          options: { responsive: true, plugins: { legend: { position: 'bottom' } }, interaction: { mode: 'index', intersect: false } }
         });
         return () => { if (chartInstance.current) chartInstance.current.destroy(); }
       }, [data]);
@@ -536,7 +491,7 @@
         const grouped = {};
         data.forEach(item => {
           const prod = item.Produk || 'Unknown';
-          grouped[prod] = (grouped[prod] || 0) + 1;
+          grouped[prod] = (grouped[prod] || 0) + 1; 
         });
         const labels = Object.keys(grouped);
         const dataset = Object.values(grouped);
@@ -546,9 +501,9 @@
           type: 'bar',
           data: {
             labels,
-            datasets: [{ label: 'Jml Terjual', data: dataset, backgroundColor: '#6366f1', borderRadius: 4 }]
+            datasets: [{ label: 'Jumlah Transaksi', data: dataset, backgroundColor: '#6366f1', borderRadius: 6 }]
           },
-          options: { maintainAspectRatio: false, responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } }, x: { ticks: { font: {size: 10}, maxRotation: 45, minRotation: 45 } } } }
+          options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
         });
         return () => { if (chartInstance.current) chartInstance.current.destroy(); }
       }, [data]);
@@ -574,31 +529,31 @@
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
 
       const getColor = (val) => {
-        if (!val) return '#f8fafc';
+        if (!val) return '#f8fafc'; 
         const intensity = Math.max(0.15, val / maxVal);
-        return `rgba(99, 102, 241, ${intensity})`;
+        return `rgba(99, 102, 241, ${intensity})`; 
       };
 
-      if(years.length === 0) return <div className="text-gray-400 text-center py-6 md:py-8 bg-gray-50 rounded-xl text-sm md:text-base">Belum ada data visual</div>;
+      if(years.length === 0) return <div className="text-gray-400 text-center py-8 bg-gray-50 rounded-xl">Belum ada data visual</div>;
 
       return (
-        <div className="overflow-x-auto rounded-xl border border-gray-100 max-w-full">
-          <table className="w-full text-xs md:text-sm min-w-[600px]">
+        <div className="overflow-x-auto rounded-xl border border-gray-100">
+          <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 text-gray-600">
-                <th className="p-2 md:p-3 border-b border-r font-semibold">Thn</th>
-                {months.map(m => <th key={m} className="p-2 md:p-3 border-b font-semibold">{m.slice(0,3)}</th>)}
+                <th className="p-3 border-b border-r font-semibold">Tahun</th>
+                {months.map(m => <th key={m} className="p-3 border-b font-semibold">{m}</th>)}
               </tr>
             </thead>
             <tbody>
               {years.map(y => (
                 <tr key={y}>
-                  <td className="p-2 md:p-3 border-r border-b font-bold text-center text-gray-700 bg-white">{y}</td>
+                  <td className="p-3 border-r border-b font-bold text-center text-gray-700 bg-white">{y}</td>
                   {months.map((m, i) => {
                     const val = matrix[y]?.[i+1] || 0;
                     return (
-                      <td key={i} className="p-2 md:p-3 border-b text-center relative group transition-colors duration-300 h-10 md:h-auto" style={{ backgroundColor: getColor(val) }}>
-                        <span className="opacity-0 group-hover:opacity-100 absolute bg-gray-900 text-white text-[10px] md:text-xs py-1 px-2 rounded -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap z-10 transition-opacity pointer-events-none shadow-lg">
+                      <td key={i} className="p-3 border-b text-center relative group transition-colors duration-300" style={{ backgroundColor: getColor(val) }}>
+                        <span className="opacity-0 group-hover:opacity-100 absolute bg-gray-900 text-white text-xs py-1 px-2 rounded -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap z-10 transition-opacity pointer-events-none shadow-lg">
                           {formatRp(val)}
                         </span>
                       </td>
@@ -620,23 +575,23 @@
       const exportCSV = () => {
         if(data.length === 0) return alert("Tidak ada data untuk diexport");
         const headers = ["Tanggal", "Nama", "Alamat", "Produk", "Pembayaran", "Nominal", "Kode Transaksi", "Persentase Fee", "Nominal Fee"];
-        const csvContent = "data:text/csv;charset=utf-8,"
-          + headers.join(",") + "\\n"
+        const csvContent = "data:text/csv;charset=utf-8," 
+          + headers.join(",") + "\n"
           + data.map(row => {
               return `"${row.Tanggal}","${row.Nama}","${row.Alamat}","${row.Produk}","${row.Pembayaran}","${row.Nominal}","${row['Kode Transaksi']}","${row['Persentase Fee']}","${row['Nominal Fee']}"`;
-          }).join("\\n");
+          }).join("\n");
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "Rekap_Portal_Pena.csv");
+        link.setAttribute("download", "Laporan_Pena.csv");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       };
 
       const handleDelete = async (id) => {
-        if(!window.confirm("PERINGATAN!\\n\\nApakah Anda yakin ingin menghapus data ini secara permanen? Data yang dihapus tidak dapat dikembalikan.")) return;
-
+        if(!window.confirm("PERINGATAN!\n\nApakah Anda yakin ingin menghapus data ini secara permanen? Data yang dihapus tidak dapat dikembalikan.")) return;
+        
         setIsDeleting(true);
         try {
           const response = await fetch(API_URL, {
@@ -647,8 +602,8 @@
           const result = await response.json();
           if (result.success) {
             alert("Data berhasil dihapus!");
-            setSelectedRecord(null);
-            reloadData();
+            setSelectedRecord(null); 
+            reloadData(); 
           } else {
             alert("Gagal menghapus: " + result.message);
           }
@@ -659,82 +614,79 @@
       };
 
       return (
-        <div className="space-y-4 md:space-y-6 w-full max-w-full">
-          {/* Action Header Mobile Friendly */}
-          <div className="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 no-print w-full flex flex-col gap-3">
-            <button onClick={() => setShowAddModal(true)} className="w-full flex justify-center items-center gap-2 bg-indigo-600 text-white px-5 py-3 rounded-xl shadow hover:bg-indigo-700 transition font-bold text-sm md:text-base">
-              <IconPlus /> Tambah Laporan Baru
-            </button>
-
-            <div className="grid grid-cols-2 md:flex md:flex-wrap gap-2 w-full">
-              <button onClick={exportCSV} className="w-full md:w-auto flex justify-center items-center gap-1.5 bg-emerald-600 text-white px-3 py-2.5 text-xs sm:text-sm font-medium rounded-lg hover:bg-emerald-700 transition shadow-sm">
+        <div className="space-y-6">
+          <div className="flex flex-wrap gap-4 justify-between items-center no-print bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+            <div className="flex gap-2">
+              <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-lg shadow hover:bg-indigo-700 transition font-medium">
+                <IconPlus /> Tambah Record
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button onClick={exportCSV} className="flex items-center gap-1.5 bg-emerald-600 text-white px-4 py-2 text-sm font-medium rounded-lg hover:bg-emerald-700 transition shadow-sm">
                 <IconDownload /> CSV
               </button>
-              <button onClick={() => setPrintMode('table')} className="w-full md:w-auto flex justify-center items-center gap-1.5 bg-slate-600 text-white px-3 py-2.5 text-xs sm:text-sm font-medium rounded-lg hover:bg-slate-700 transition shadow-sm">
-                <IconPrinter /> Cetak Tabel
+              <button onClick={() => setPrintMode('table')} className="flex items-center gap-1.5 bg-slate-600 text-white px-4 py-2 text-sm font-medium rounded-lg hover:bg-slate-700 transition shadow-sm">
+                <IconPrinter /> Tabel Cetak
               </button>
-              <button onClick={() => setPrintMode('bukti_perawatan')} className="w-full md:w-auto flex justify-center items-center gap-1.5 bg-blue-600 text-white px-3 py-2.5 text-xs sm:text-sm font-medium rounded-lg hover:bg-blue-700 transition shadow-sm">
-                <IconPrinter /> Bkt Rawat
+              <button onClick={() => setPrintMode('bukti_perawatan')} className="flex items-center gap-1.5 bg-blue-600 text-white px-4 py-2 text-sm font-medium rounded-lg hover:bg-blue-700 transition shadow-sm">
+                <IconPrinter /> Bukti Perawatan
               </button>
-              <button onClick={() => setPrintMode('bukti_transfer')} className="w-full md:w-auto flex justify-center items-center gap-1.5 bg-blue-600 text-white px-3 py-2.5 text-xs sm:text-sm font-medium rounded-lg hover:bg-blue-700 transition shadow-sm">
-                <IconPrinter /> Bkt Trans
+              <button onClick={() => setPrintMode('bukti_transfer')} className="flex items-center gap-1.5 bg-blue-600 text-white px-4 py-2 text-sm font-medium rounded-lg hover:bg-blue-700 transition shadow-sm">
+                <IconPrinter /> Bukti Transfer
               </button>
             </div>
           </div>
 
-          {/* Table Container Responsive */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full max-w-full">
-            <div className="overflow-x-auto w-full pb-2">
-              <table className="w-full text-left border-collapse min-w-[800px] md:min-w-full">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-gray-50 text-gray-700 border-b border-gray-200 text-xs md:text-sm">
-                    <th className="p-3 md:p-4 font-semibold whitespace-nowrap">Tanggal</th>
-                    <th className="p-3 md:p-4 font-semibold">Nama & Alamat</th>
-                    <th className="p-3 md:p-4 font-semibold">Produk</th>
-                    <th className="p-3 md:p-4 font-semibold text-center">Metode</th>
-                    <th className="p-3 md:p-4 font-semibold">Nominal</th>
-                    <th className="p-3 md:p-4 font-semibold">Transaksi</th>
-                    <th className="p-3 md:p-4 font-semibold text-center">Fee</th>
-                    <th className="p-3 md:p-4 font-semibold">Nominal Fee</th>
+                  <tr className="bg-gray-50 text-gray-700 border-b border-gray-200 text-sm">
+                    <th className="p-4 font-semibold">Tanggal</th>
+                    <th className="p-4 font-semibold">Nama & Alamat</th>
+                    <th className="p-4 font-semibold">Produk</th>
+                    <th className="p-4 font-semibold text-center">Pembayaran</th>
+                    <th className="p-4 font-semibold">Nominal</th>
+                    <th className="p-4 font-semibold">Kode Transaksi</th>
+                    <th className="p-4 font-semibold text-center">Fee</th>
+                    <th className="p-4 font-semibold">Nominal Fee</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 text-xs md:text-sm">
+                <tbody className="divide-y divide-gray-100">
                   {data.map((row, idx) => (
-                    <tr key={row.ID || idx} onClick={() => setSelectedRecord(row)} className="hover:bg-indigo-50/50 cursor-pointer transition-colors group active:bg-indigo-100">
-                      <td className="p-3 md:p-4 whitespace-nowrap text-gray-600">{row.Tanggal ? new Date(row.Tanggal).toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric'}) : '-'}</td>
-                      <td className="p-3 md:p-4">
-                        <div className="font-bold text-gray-800 group-hover:text-indigo-700 transition-colors whitespace-nowrap md:whitespace-normal">{row.Nama}</div>
-                        <div className="text-[10px] md:text-xs text-gray-500 truncate max-w-[150px] md:max-w-[200px] mt-0.5">{row.Alamat}</div>
+                    <tr key={row.ID || idx} onClick={() => setSelectedRecord(row)} className="hover:bg-indigo-50/50 cursor-pointer transition-colors group">
+                      <td className="p-4 whitespace-nowrap text-gray-600">{row.Tanggal ? new Date(row.Tanggal).toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric'}) : '-'}</td>
+                      <td className="p-4">
+                        <div className="font-semibold text-gray-800 group-hover:text-indigo-700 transition-colors">{row.Nama}</div>
+                        <div className="text-xs text-gray-500 truncate max-w-[300px] mt-0.5">{row.Alamat}</div>
                       </td>
-                      <td className="p-3 md:p-4 text-gray-700 whitespace-nowrap">{row.Produk}</td>
-                      <td className="p-3 md:p-4 text-center">
-                        <span className={`px-2 py-1 rounded-full text-[10px] md:text-xs font-bold tracking-wide whitespace-nowrap ${row.Pembayaran === 'Transfer' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                      <td className="p-4 text-gray-700">{row.Produk}</td>
+                      <td className="p-4 text-center">
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${row.Pembayaran === 'Transfer' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}`}>
                           {row.Pembayaran}
                         </span>
                       </td>
-                      <td className="p-3 md:p-4 font-bold text-gray-800 whitespace-nowrap">{formatRp(row.Nominal)}</td>
-                      <td className="p-3 md:p-4 text-[10px] md:text-xs font-mono text-gray-500 whitespace-nowrap">{row['Kode Transaksi']}</td>
-                      <td className="p-3 md:p-4 text-center font-medium text-gray-600">{row['Persentase Fee']}%</td>
-                      <td className="p-3 md:p-4 font-semibold text-indigo-700 whitespace-nowrap">{formatRp(row['Nominal Fee'])}</td>
+                      <td className="p-4 font-semibold text-gray-800">{formatRp(row.Nominal)}</td>
+                      <td className="p-4 text-xs font-mono text-gray-500">{row['Kode Transaksi']}</td>
+                      <td className="p-4 text-center font-medium text-gray-600">{row['Persentase Fee']}%</td>
+                      <td className="p-4 font-semibold text-indigo-700">{formatRp(row['Nominal Fee'])}</td>
                     </tr>
                   ))}
                   {data.length === 0 && (
-                    <tr><td colSpan="8" className="p-8 md:p-10 text-center text-gray-400 bg-gray-50/50">Belum ada data terekam untuk periode ini.</td></tr>
+                    <tr><td colSpan="8" className="p-10 text-center text-gray-400 bg-gray-50/50">Belum ada data terekam untuk periode ini.</td></tr>
                   )}
                 </tbody>
               </table>
             </div>
-            {/* Visual indicator for horizontal scroll on mobile */}
-            {data.length > 0 && <div className="text-center text-[10px] text-gray-400 py-1 bg-gray-50 md:hidden italic">← Geser tabel ke samping →</div>}
           </div>
 
           {selectedRecord && (
-            <DetailModal
-              record={selectedRecord}
-              onClose={() => setSelectedRecord(null)}
+            <DetailModal 
+              record={selectedRecord} 
+              onClose={() => setSelectedRecord(null)} 
               onEdit={() => {
                 setSelectedRecord(null);
-                setShowAddModal(selectedRecord);
+                setShowAddModal(selectedRecord); 
               }}
               onDelete={() => handleDelete(selectedRecord.ID)}
               isDeleting={isDeleting}
@@ -742,7 +694,7 @@
           )}
 
           {showAddModal && (
-            <FormModal
+            <FormModal 
               existingRecord={typeof showAddModal === 'object' ? showAddModal : null}
               products={products}
               onClose={() => setShowAddModal(false)}
@@ -754,49 +706,49 @@
     };
 
     const DetailModal = ({ record, onClose, onEdit, onDelete, isDeleting }) => (
-      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center modal-overlay sm:p-4 no-print">
-        <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-4xl max-h-[95vh] sm:max-h-[90vh] flex flex-col transform transition-all border border-gray-100 overflow-hidden">
-          <div className="p-4 sm:p-5 border-b flex justify-between items-center bg-gray-50/50">
-            <h3 className="font-extrabold text-lg sm:text-xl text-gray-800 tracking-tight">Detail Transaksi</h3>
+      <div className="fixed inset-0 z-50 flex items-center justify-center modal-overlay p-4 no-print">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col transform transition-all border border-gray-100">
+          <div className="p-5 border-b flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
+            <h3 className="font-bold text-xl text-gray-800 tracking-tight">Detail Transaksi</h3>
             <button onClick={onClose} disabled={isDeleting} className="text-gray-400 hover:text-gray-700 transition p-1 hover:bg-gray-200 rounded-lg">
-              <IconX />
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
           </div>
-          <div className="p-4 sm:p-8 overflow-y-auto flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 bg-white pb-20 sm:pb-8">
-            <div className="space-y-4 sm:space-y-5">
-              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Tanggal</span><div className="font-semibold text-gray-800 text-sm sm:text-base">{new Date(record.Tanggal).toLocaleDateString('id-ID', {weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'})}</div></div>
-              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Nama Klien</span><div className="font-bold text-gray-900 text-sm sm:text-base">{record.Nama}</div></div>
-              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Alamat Lengkap</span><div className="font-medium text-gray-800 text-sm sm:text-base">{record.Alamat}</div></div>
-              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Produk</span><div><span className="font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded text-sm sm:text-base">{record.Produk}</span></div></div>
-              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Metode</span><div className="font-bold text-gray-800 text-sm sm:text-base">{record.Pembayaran}</div></div>
-              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Total Nominal</span><div className="font-extrabold text-lg sm:text-xl text-gray-900">{formatRp(record.Nominal)}</div></div>
-              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">No. Transaksi</span><div><span className="font-mono text-xs sm:text-sm bg-gray-100 px-2 py-1 rounded text-gray-700">{record['Kode Transaksi']}</span></div></div>
-              <div className="flex flex-col sm:flex-row pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Potongan Fee</span><div className="font-bold text-rose-600 text-sm sm:text-base">{record['Persentase Fee']}% <span className="text-gray-400 font-normal ml-1">({formatRp(record['Nominal Fee'])})</span></div></div>
+          <div className="p-8 overflow-y-auto flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 bg-white">
+            <div className="space-y-5">
+              <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Tanggal Transaksi</span><div className="font-semibold text-gray-800">{new Date(record.Tanggal).toLocaleDateString('id-ID', {weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'})}</div></div>
+              <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Nama Pelanggan</span><div className="font-semibold text-gray-800">{record.Nama}</div></div>
+              <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Alamat Lengkap</span><div className="font-semibold text-gray-800">{record.Alamat}</div></div>
+              <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Produk</span><div className="font-medium text-gray-800">{record.Produk}</div></div>
+              <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Metode Pembayaran</span><div className="font-medium text-gray-800">{record.Pembayaran}</div></div>
+              <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Nominal</span><div className="font-semibold text-gray-800">{formatRp(record.Nominal)}</div></div>
+              <div className="flex border-b border-gray-50 pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Kode Transaksi</span><div className="font-mono text-sm bg-gray-100 px-2 py-1 rounded text-gray-700">{record['Kode Transaksi']}</div></div>
+              <div className="flex pb-3"><span className="text-gray-500 text-sm w-32 shrink-0">Fee</span><div className="font-semibold text-gray-800">{record['Persentase Fee']}% <span className="text-gray-800 font-normal ml-1">({formatRp(record['Nominal Fee'])})</span></div></div>
             </div>
-            <div className="space-y-4 sm:space-y-6">
-              <div className="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-100">
-                <span className="text-gray-600 font-semibold text-xs sm:text-sm mb-2 sm:mb-3 block flex items-center gap-2"><IconBank /> Bukti Transfer</span>
-                {record['URL Bukti Transfer'] ?
+            <div className="space-y-6">
+              <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                <span className="text-gray-600 font-semibold text-sm mb-3 block flex items-center gap-2"><IconBank /> Bukti Transfer</span>
+                {record['URL Bukti Transfer'] ? 
                   <a href={record['URL Bukti Transfer']} target="_blank" className="block overflow-hidden rounded-lg hover:shadow-md transition">
-                    <img src={getSafeImageUrl(record['URL Bukti Transfer'])} alt="Bukti Transfer" className="w-full h-40 sm:h-56 object-cover hover:scale-105 transition duration-300" />
-                  </a> :
-                  <div className="bg-white border border-dashed border-gray-300 h-32 sm:h-56 rounded-lg flex flex-col items-center justify-center text-xs sm:text-sm text-gray-400"><span>Tidak ada dokumen</span></div>}
+                    <img src={getSafeImageUrl(record['URL Bukti Transfer'])} alt="Bukti Transfer" className="w-full h-56 object-cover hover:scale-105 transition duration-300" />
+                  </a> : 
+                  <div className="bg-white border border-dashed border-gray-300 h-56 rounded-lg flex flex-col items-center justify-center text-sm text-gray-400"><span>Tidak ada dokumen</span></div>}
               </div>
-              <div className="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-100">
-                <span className="text-gray-600 font-semibold text-xs sm:text-sm mb-2 sm:mb-3 block flex items-center gap-2"><IconList /> Bukti Perawatan</span>
-                {record['URL Bukti Perawatan'] ?
+              <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                <span className="text-gray-600 font-semibold text-sm mb-3 block flex items-center gap-2"><IconList /> Bukti Perawatan</span>
+                {record['URL Bukti Perawatan'] ? 
                   <a href={record['URL Bukti Perawatan']} target="_blank" className="block overflow-hidden rounded-lg hover:shadow-md transition">
-                    <img src={getSafeImageUrl(record['URL Bukti Perawatan'])} alt="Bukti Perawatan" className="w-full h-40 sm:h-56 object-cover hover:scale-105 transition duration-300" />
-                  </a> :
-                  <div className="bg-white border border-dashed border-gray-300 h-32 sm:h-56 rounded-lg flex flex-col items-center justify-center text-xs sm:text-sm text-gray-400"><span>Tidak ada dokumen</span></div>}
+                    <img src={getSafeImageUrl(record['URL Bukti Perawatan'])} alt="Bukti Perawatan" className="w-full h-56 object-cover hover:scale-105 transition duration-300" />
+                  </a> : 
+                  <div className="bg-white border border-dashed border-gray-300 h-56 rounded-lg flex flex-col items-center justify-center text-sm text-gray-400"><span>Tidak ada dokumen</span></div>}
               </div>
             </div>
           </div>
-          <div className="absolute sm:relative bottom-0 left-0 w-full p-4 sm:p-5 border-t bg-white sm:bg-gray-50/50 flex flex-col-reverse sm:flex-row justify-between items-stretch sm:items-center gap-2 sm:gap-3 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] sm:shadow-none">
-            <button onClick={onDelete} disabled={isDeleting} className={`flex justify-center items-center gap-2 text-rose-600 bg-white border border-rose-200 hover:bg-rose-50 hover:border-rose-300 px-5 py-3 sm:py-2.5 rounded-lg transition font-medium shadow-sm w-full sm:w-auto text-sm sm:text-base ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}>
+          <div className="p-5 border-t bg-gray-50/50 rounded-b-2xl flex justify-between items-center gap-3">
+            <button onClick={onDelete} disabled={isDeleting} className={`flex items-center gap-2 text-rose-600 bg-white border border-rose-200 hover:bg-rose-50 hover:border-rose-300 px-5 py-2.5 rounded-lg transition font-medium shadow-sm ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}>
               <IconTrash /> {isDeleting ? 'Memproses...' : 'Hapus Record'}
             </button>
-            <button onClick={onEdit} disabled={isDeleting} className="bg-indigo-600 text-white px-8 py-3 sm:py-2.5 rounded-lg shadow-md hover:bg-indigo-700 transition font-bold w-full sm:w-auto disabled:opacity-50 text-sm sm:text-base">
+            <button onClick={onEdit} disabled={isDeleting} className="bg-indigo-600 text-white px-8 py-2.5 rounded-lg shadow hover:bg-indigo-700 transition font-medium disabled:opacity-50">
               Edit Data
             </button>
           </div>
@@ -808,10 +760,10 @@
       const isEdit = !!existingRecord;
       const emptyForm = {
         Tanggal: new Date().toISOString().split('T')[0],
-        Nama: '', Alamat: '', Produk: '', Pembayaran: 'Transfer',
+        Nama: '', Alamat: '', Produk: '', Pembayaran: 'Transfer', 
         Nominal: '', 'Kode Transaksi': '', 'Persentase Fee': '', 'Nominal Fee': ''
       };
-
+      
       const [formData, setFormData] = useState(isEdit ? {...existingRecord, Tanggal: extractLocalDate(existingRecord.Tanggal)} : emptyForm);
       const [newProduct, setNewProduct] = useState('');
       const [files, setFiles] = useState({ transfer: null, perawatan: null });
@@ -838,13 +790,13 @@
           const response = await fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify({ action: isEdit ? 'edit' : 'add', payload }),
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' } 
           });
-
+          
           const result = await response.json();
           if (result.success) {
             alert(isEdit ? "Data berhasil diperbarui!" : "Data baru berhasil ditambahkan!");
-            onSuccess();
+            onSuccess(); 
             if(isEdit) {
               onClose();
             } else {
@@ -863,88 +815,88 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center modal-overlay sm:p-4 no-print">
-          <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-3xl max-h-[95vh] sm:max-h-[90vh] flex flex-col transform transition-all border border-gray-100 overflow-hidden">
-            <div className="p-4 sm:p-5 border-b flex justify-between items-center bg-gray-50/50">
-              <h3 className="font-extrabold text-lg sm:text-xl text-gray-800 tracking-tight">{isEdit ? 'Ubah Laporan' : 'Tambah Laporan'}</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center modal-overlay p-4 no-print">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col transform transition-all border border-gray-100">
+            <div className="p-5 border-b flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
+              <h3 className="font-semibold text-xl text-gray-800 tracking-tight">{isEdit ? 'Ubah Detail Transaksi' : 'Tambah Record Laporan'}</h3>
               <button onClick={onClose} disabled={submitting} className="text-gray-400 hover:text-gray-700 transition p-1 hover:bg-gray-200 rounded-lg">
-                <IconX />
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             </div>
-
-            <div className="p-4 sm:p-6 overflow-y-auto flex-1 pb-20 sm:pb-6">
-              <form id="recordForm" onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+            
+            <div className="p-6 overflow-y-auto flex-1">
+              <form id="recordForm" onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Tanggal Laporan</label>
-                  <input type="date" required className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm sm:text-base" value={formData.Tanggal} onChange={e => setFormData({...formData, Tanggal: e.target.value})} />
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Transaksi</label>
+                  <input type="date" required className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition" value={formData.Tanggal} onChange={e => setFormData({...formData, Tanggal: e.target.value})} />
                 </div>
                 <div>
-                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">No Transaksi</label>
-                  <input type="text" required className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition uppercase font-mono text-sm sm:text-base placeholder-gray-400" placeholder="TRX-123" value={formData['Kode Transaksi']} onChange={e => setFormData({...formData, 'Kode Transaksi': e.target.value})} />
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Kode Transaksi</label>
+                  <input type="text" required className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition uppercase font-mono text-sm placeholder-gray-400" placeholder="CMI1C-999" value={formData['Kode Transaksi']} onChange={e => setFormData({...formData, 'Kode Transaksi': e.target.value})} />
                 </div>
-                <div className="sm:col-span-2">
-                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Nama Lengkap Klien</label>
-                  <input type="text" required className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm sm:text-base" placeholder="Masukkan nama..." value={formData.Nama} onChange={e => setFormData({...formData, Nama: e.target.value})} />
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Nama Pelanggan</label>
+                  <input type="text" required className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition" placeholder="Masukkan nama..." value={formData.Nama} onChange={e => setFormData({...formData, Nama: e.target.value})} />
                 </div>
-                <div className="sm:col-span-2">
-                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Alamat / Lokasi</label>
-                  <textarea required className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition resize-none text-sm sm:text-base" rows="2" placeholder="Masukkan alamat lengkap..." value={formData.Alamat} onChange={e => setFormData({...formData, Alamat: e.target.value})}></textarea>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Alamat Lengkap</label>
+                  <textarea required className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition resize-none" rows="2" placeholder="Masukkan alamat lengkap..." value={formData.Alamat} onChange={e => setFormData({...formData, Alamat: e.target.value})}></textarea>
                 </div>
-
-                <div className="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-100 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                
+                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Pilih/Ketik Produk Baru</label>
-                    <select className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg mb-2 focus:ring-2 focus:ring-indigo-500 outline-none bg-white text-sm sm:text-base" value={formData.Produk} onChange={e => setFormData({...formData, Produk: e.target.value})}>
-                      <option value="">-- Daftar Produk --</option>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Pilih / Ketik Produk Baru</label>
+                    <select className="w-full border border-gray-300 p-2.5 rounded-lg mb-2 focus:ring-2 focus:ring-indigo-500 outline-none bg-white" value={formData.Produk} onChange={e => setFormData({...formData, Produk: e.target.value})}>
+                      <option value="">-- Pilih Produk --</option>
                       {(products || []).map(p => <option key={p} value={p}>{p}</option>)}
                     </select>
-                    <input type="text" placeholder="*Atau buat nama produk baru" className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 outline-none" value={newProduct} onChange={e => { setNewProduct(e.target.value); setFormData({...formData, Produk: ''}); }} />
+                    <input type="text" placeholder="*Atau buat nama produk baru" className="w-full border border-gray-300 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none" value={newProduct} onChange={e => { setNewProduct(e.target.value); setFormData({...formData, Produk: ''}); }} />
                   </div>
                   <div>
-                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Metode Pembayaran</label>
-                    <div className="flex gap-4 mt-2 sm:mt-3 bg-white p-2.5 rounded-lg border border-gray-200">
-                      <label className="flex items-center gap-2 cursor-pointer font-medium text-gray-700 text-sm"><input type="radio" name="pay" className="w-4 h-4 text-indigo-600" checked={formData.Pembayaran === 'Transfer'} onChange={() => setFormData({...formData, Pembayaran: 'Transfer'})}/> Transfer</label>
-                      <label className="flex items-center gap-2 cursor-pointer font-medium text-gray-700 text-sm"><input type="radio" name="pay" className="w-4 h-4 text-indigo-600" checked={formData.Pembayaran === 'Tunai'} onChange={() => setFormData({...formData, Pembayaran: 'Tunai'})}/> Tunai</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Metode Pembayaran</label>
+                    <div className="flex gap-4 mt-3 bg-white p-2.5 rounded-lg border border-gray-200">
+                      <label className="flex items-center gap-2 cursor-pointer font-medium text-gray-700"><input type="radio" name="pay" className="w-4 h-4 text-indigo-600" checked={formData.Pembayaran === 'Transfer'} onChange={() => setFormData({...formData, Pembayaran: 'Transfer'})}/> Transfer</label>
+                      <label className="flex items-center gap-2 cursor-pointer font-medium text-gray-700"><input type="radio" name="pay" className="w-4 h-4 text-indigo-600" checked={formData.Pembayaran === 'Tunai'} onChange={() => setFormData({...formData, Pembayaran: 'Tunai'})}/> Tunai</label>
                     </div>
                   </div>
                 </div>
 
-                <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Nominal Harga (Rp)</label>
-                    <input type="number" required className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-gray-800 text-sm sm:text-base" value={formData.Nominal} onChange={e => setFormData({...formData, Nominal: e.target.value})} />
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Nominal (Rp)</label>
+                    <input type="number" required className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none font-semibold text-gray-800" value={formData.Nominal} onChange={e => setFormData({...formData, Nominal: e.target.value})} />
                   </div>
                   <div>
-                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Potongan Fee (%)</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Persentase Fee (%)</label>
                     <div className="relative">
-                      <input type="number" required className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg focus:ring-2 focus:ring-rose-500 outline-none font-bold text-rose-600 pr-8 text-sm sm:text-base" value={formData['Persentase Fee']} onChange={e => setFormData({...formData, 'Persentase Fee': e.target.value})} />
+                      <input type="number" required className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none font-semibold text-grey-800 pr-8" value={formData['Persentase Fee']} onChange={e => setFormData({...formData, 'Persentase Fee': e.target.value})} />
                       <span className="absolute right-3 top-2.5 text-gray-400 font-bold">%</span>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Nominal Terpotong</label>
-                    <input type="number" readOnly className="w-full border border-gray-200 bg-gray-100 p-2 sm:p-2.5 rounded-lg outline-none font-bold text-gray-500 cursor-not-allowed text-sm sm:text-base" value={formData['Nominal Fee']} />
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Nominal Fee (Rp)</label>
+                    <input type="number" readOnly className="w-full border border-gray-200 bg-gray-100 p-2.5 rounded-lg outline-none font-bold text-gray-500 cursor-not-allowed" value={formData['Nominal Fee']} />
                   </div>
                 </div>
-
-                <div className="border-t border-gray-100 pt-4 sm:pt-5 mt-2 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                
+                <div className="border-t border-gray-100 pt-5 mt-2 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2"><IconBank/> Bukti Transfer <span className="text-gray-400 font-normal text-[10px] sm:text-xs">(Ops)</span></label>
-                    <input type="file" accept="image/*" className="w-full text-xs sm:text-sm file:mr-4 file:py-1.5 file:sm:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer" onChange={e => setFiles({...files, transfer: e.target.files[0]})} />
-                    {isEdit && formData['URL Bukti Transfer'] && !files.transfer && <span className="text-xs text-emerald-600 mt-2 block font-medium flex items-center gap-1"><svg xmlns="<http://www.w3.org/2000/svg>" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Dokumen ada</span>}
+                    <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2"><IconBank/> Bukti Transfer <span className="text-gray-400 font-normal text-xs">(Opsional)</span></label>
+                    <input type="file" accept="image/*" className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer" onChange={e => setFiles({...files, transfer: e.target.files[0]})} />
+                    {isEdit && formData['URL Bukti Transfer'] && !files.transfer && <span className="text-xs text-emerald-600 mt-2 block font-medium flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Dokumen tersimpan</span>}
                   </div>
                   <div>
-                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2"><IconList/> Bukti Perawatan <span className="text-gray-400 font-normal text-[10px] sm:text-xs">(Ops)</span></label>
-                    <input type="file" accept="image/*" className="w-full text-xs sm:text-sm file:mr-4 file:py-1.5 file:sm:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer" onChange={e => setFiles({...files, perawatan: e.target.files[0]})} />
-                    {isEdit && formData['URL Bukti Perawatan'] && !files.perawatan && <span className="text-xs text-emerald-600 mt-2 block font-medium flex items-center gap-1"><svg xmlns="<http://www.w3.org/2000/svg>" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Dokumen ada</span>}
+                    <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2"><IconList/> Bukti Perawatan <span className="text-gray-400 font-normal text-xs">(Opsional)</span></label>
+                    <input type="file" accept="image/*" className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer" onChange={e => setFiles({...files, perawatan: e.target.files[0]})} />
+                    {isEdit && formData['URL Bukti Perawatan'] && !files.perawatan && <span className="text-xs text-emerald-600 mt-2 block font-medium flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Dokumen tersimpan</span>}
                   </div>
                 </div>
               </form>
             </div>
-
-            <div className="absolute sm:relative bottom-0 left-0 w-full p-4 sm:p-5 border-t bg-white sm:bg-gray-50/50 flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] sm:shadow-none">
-              <button type="button" onClick={onClose} disabled={submitting} className="w-full sm:w-auto px-5 py-3 sm:py-2.5 text-gray-600 font-medium border border-gray-300 sm:border-0 hover:bg-gray-200 rounded-lg transition text-sm sm:text-base">Batalkan</button>
-              <button form="recordForm" type="submit" disabled={submitting} className={`w-full sm:w-auto px-8 py-3 sm:py-2.5 rounded-lg font-bold text-white shadow-md transition text-sm sm:text-base ${submitting ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}>
+            
+            <div className="p-5 border-t bg-gray-50/50 rounded-b-2xl flex justify-end gap-3">
+              <button type="button" onClick={onClose} disabled={submitting} className="px-5 py-2.5 text-gray-600 font-medium hover:bg-gray-200 rounded-lg transition">Batalkan</button>
+              <button form="recordForm" type="submit" disabled={submitting} className={`px-8 py-2.5 rounded-lg font-bold text-white shadow-md transition ${submitting ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}>
                 {submitting ? 'Menyimpan...' : (isEdit ? 'Update Sekarang' : 'Simpan Laporan')}
               </button>
             </div>
@@ -955,7 +907,7 @@
 
     const DashboardPrintView = ({ data, filterBulan, filterTahun }) => (
       <div>
-        <h1 className="text-2xl font-bold text-center mb-6">Laporan Dashboard Analitik Portal Pena</h1>
+        <h1 className="text-2xl font-bold text-center mb-6">Dashboard Hasil Pena Anggih Saeful Khiyar</h1>
         <p className="text-center mb-6 text-gray-600">
           Periode: {filterBulan === 'Semua' ? 'Sepanjang Tahun' : NAMA_BULAN[parseInt(filterBulan) - 1]} - {filterTahun}
         </p>
@@ -969,7 +921,7 @@
 
       return (
         <div>
-          <h1 className="text-2xl font-bold text-center mb-2">Master Rekap Laporan Portal Pena</h1>
+          <h1 className="text-2xl font-bold text-center mb-2">Hasil Pena Anggih Saeful Khiyar</h1>
           <p className="text-center mb-6 text-gray-600">
             Periode: {filterBulan === 'Semua' ? 'Sepanjang Tahun' : NAMA_BULAN[parseInt(filterBulan) - 1]} - {filterTahun}
           </p>
@@ -1030,7 +982,7 @@
 
       return (
         <div>
-          <h1 className="text-2xl font-bold text-center mb-2 capitalize">Cetak Bukti {type}</h1>
+          <h1 className="text-2xl font-bold text-center mb-2 capitalize">Bukti {type} Anggih Saeful Khiyar</h1>
           <p className="text-center mb-6 text-gray-600">
             Periode: {filterBulan === 'Semua' ? 'Sepanjang Tahun' : NAMA_BULAN[parseInt(filterBulan) - 1]} - {filterTahun}
           </p>
