@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Laporan Pena Anggih</title>
+  <title>Portal Laporan Hasil Pena</title>
 
   <!-- Tailwind CSS -->
   <script src="<https://cdn.tailwindcss.com>"></script>
@@ -77,7 +77,7 @@
       }
       .bukti-img {
         aspect-ratio: 9/16;
-        object-shrink: cover;
+        object-fit: cover;
         width: 100%;
         border-radius: 6px;
         margin-bottom: 10px;
@@ -101,10 +101,10 @@
     // ==========================================
     // CONFIGURATION
     // ==========================================
-    const API_URL = "https://script.google.com/macros/s/AKfycbyg0lQb5kO7rtCl2xC9qyiMWU2_0wt0xGPkyWogXgYnYmmaZGyDz46Cw-RkHEwo8B5Yxw/exec";
+    const API_URL = "URL_WEB_APP_ANDA_DISINI";
 
     // UBAH PIN ATAU PASSWORD ANDA DI SINI
-    const APP_PIN = "4nn61hyun";
+    const APP_PIN = "123456";
 
     // Data Referensi
     const NAMA_BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -170,7 +170,7 @@
     };
 
     // ==========================================
-    // LOGIN COMPONENT - DESAIN BARU
+    // LOGIN COMPONENT
     // ==========================================
     const LoginScreen = ({ onLogin }) => {
       const [pin, setPin] = useState('');
@@ -199,8 +199,8 @@
             <div className="flex justify-center mb-4 text-blue-600 drop-shadow-md">
               <IconLock />
             </div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-center text-gray-800 mb-2">Portal Pena Ann Gi Hyun</h2>
-            <p className="text-center text-gray-500 mb-8 text-sm">Silakan masukkan kode akses</p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-center text-gray-800 mb-2">Portal Pena</h2>
+            <p className="text-center text-gray-500 mb-8 text-sm">Silakan masukkan akses PIN Anda</p>
 
             {error && (
               <div className="bg-red-50 text-red-600 p-3 rounded-xl mb-6 text-sm text-center font-medium border border-red-100 animate-pulse">
@@ -224,12 +224,12 @@
               <button
                 type="submit"
                 className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-3.5 md:py-4 px-4 rounded-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg transform hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-blue-500/50">
-                Masuk
+                Masuk Sistem
               </button>
             </form>
 
             <div className="mt-8 text-center">
-              <p className="text-[10px] md:text-xs text-gray-400 font-medium tracking-wide uppercase">Dilindungi oleh Divisi Pena &copy; {new Date().getFullYear()}</p>
+              <p className="text-[10px] md:text-xs text-gray-400 font-medium tracking-wide uppercase">Secured by Portal Pena &copy; {new Date().getFullYear()}</p>
             </div>
           </div>
         </div>
@@ -240,7 +240,6 @@
     // MAIN APP COMPONENT
     // ==========================================
     const App = () => {
-      // Auth State
       const [isAuthenticated, setIsAuthenticated] = useState(() => sessionStorage.getItem('auth_pena') === 'true');
       const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile Menu State
 
@@ -347,7 +346,7 @@
           {/* Sidebar */}
           <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-indigo-900 text-white flex flex-col no-print shadow-2xl md:shadow-xl transform transition-transform duration-300 md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
             <div className="p-5 md:p-6 font-bold text-xl md:text-2xl border-b border-indigo-800 tracking-wide flex justify-between items-center">
-              <span>Portal Pena Ann Gi Hyun</span>
+              <span>Portal Pena</span>
               <button onClick={() => setIsMobileMenuOpen(false)} className="md:hidden text-indigo-200 hover:text-white">
                 <IconX />
               </button>
@@ -381,13 +380,13 @@
                 <button className="md:hidden text-gray-700 bg-gray-100 p-2 rounded-lg hover:bg-gray-200 transition-colors" onClick={() => setIsMobileMenuOpen(true)}>
                   <IconMenu />
                 </button>
-                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 tracking-tight">
+                <h2 className="text-xl md:text-2xl font-extrabold text-gray-800 tracking-tight">
                   {activeTab === 'dashboard' ? 'Dashboard Analitik' : 'Master Rekap'}
                 </h2>
               </div>
               <div className="flex gap-2 items-center w-full sm:w-auto">
                 <select className="flex-1 sm:flex-none border-gray-300 bg-gray-50 border p-2 md:p-2.5 rounded-lg text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm cursor-pointer" value={filterBulan} onChange={(e) => setFilterBulan(e.target.value)}>
-                  <option value="Semua">Sepanjang Tahun</option>
+                  <option value="Semua">Tahun Ini</option>
                   {NAMA_BULAN.map((bulan, i) => <option key={i} value={i+1}>{bulan}</option>)}
                 </select>
                 <select className="flex-1 sm:flex-none border-gray-300 bg-gray-50 border p-2 md:p-2.5 rounded-lg text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm cursor-pointer" value={filterTahun} onChange={(e) => setFilterTahun(e.target.value)}>
@@ -438,10 +437,10 @@
         <div className="space-y-4 md:space-y-6">
           <div className="flex flex-col sm:flex-row justify-end gap-2 md:gap-3 no-print w-full">
             <button onClick={() => setPrintMode('dashboard')} className="w-full sm:w-auto flex justify-center items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-lg shadow-md hover:bg-indigo-700 transition font-medium text-sm md:text-base">
-              <IconPrinter /> Print Dashboard
+              <IconPrinter /> Cetak Dash.
             </button>
             <button onClick={handleExportPDF} className="w-full sm:w-auto flex justify-center items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-lg shadow-md hover:bg-emerald-700 transition font-medium text-sm md:text-base">
-              <IconDownload /> Export PDF
+              <IconDownload /> Simpan PDF
             </button>
           </div>
 
@@ -547,7 +546,7 @@
           type: 'bar',
           data: {
             labels,
-            datasets: [{ label: 'Jumlah Transaksi', data: dataset, backgroundColor: '#6366f1', borderRadius: 4 }]
+            datasets: [{ label: 'Jml Terjual', data: dataset, backgroundColor: '#6366f1', borderRadius: 4 }]
           },
           options: { maintainAspectRatio: false, responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } }, x: { ticks: { font: {size: 10}, maxRotation: 45, minRotation: 45 } } } }
         });
@@ -587,7 +586,7 @@
           <table className="w-full text-xs md:text-sm min-w-[600px]">
             <thead>
               <tr className="bg-gray-50 text-gray-600">
-                <th className="p-2 md:p-3 border-b border-r font-semibold">Tahun</th>
+                <th className="p-2 md:p-3 border-b border-r font-semibold">Thn</th>
                 {months.map(m => <th key={m} className="p-2 md:p-3 border-b font-semibold">{m.slice(0,3)}</th>)}
               </tr>
             </thead>
@@ -629,7 +628,7 @@
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "Laporan_Pena.csv");
+        link.setAttribute("download", "Rekap_Portal_Pena.csv");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -662,9 +661,9 @@
       return (
         <div className="space-y-4 md:space-y-6 w-full max-w-full">
           {/* Action Header Mobile Friendly */}
-          <div className="flex flex-wrap gap-4 justify-between items-center no-print bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 no-print w-full flex flex-col gap-3">
-            <button onClick={() => setShowAddModal(true)} className="w-full flex justify-center items-center gap-2 bg-indigo-600 text-white px-5 py-3 rounded-xl shadow hover:bg-indigo-700 transition font-medium">
-              <IconPlus /> Tambah Record
+          <div className="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 no-print w-full flex flex-col gap-3">
+            <button onClick={() => setShowAddModal(true)} className="w-full flex justify-center items-center gap-2 bg-indigo-600 text-white px-5 py-3 rounded-xl shadow hover:bg-indigo-700 transition font-bold text-sm md:text-base">
+              <IconPlus /> Tambah Laporan Baru
             </button>
 
             <div className="grid grid-cols-2 md:flex md:flex-wrap gap-2 w-full">
@@ -675,10 +674,10 @@
                 <IconPrinter /> Cetak Tabel
               </button>
               <button onClick={() => setPrintMode('bukti_perawatan')} className="w-full md:w-auto flex justify-center items-center gap-1.5 bg-blue-600 text-white px-3 py-2.5 text-xs sm:text-sm font-medium rounded-lg hover:bg-blue-700 transition shadow-sm">
-                <IconPrinter /> Bukti Perawatan
+                <IconPrinter /> Bkt Rawat
               </button>
               <button onClick={() => setPrintMode('bukti_transfer')} className="w-full md:w-auto flex justify-center items-center gap-1.5 bg-blue-600 text-white px-3 py-2.5 text-xs sm:text-sm font-medium rounded-lg hover:bg-blue-700 transition shadow-sm">
-                <IconPrinter /> Bukti Transfer
+                <IconPrinter /> Bkt Trans
               </button>
             </div>
           </div>
@@ -692,9 +691,9 @@
                     <th className="p-3 md:p-4 font-semibold whitespace-nowrap">Tanggal</th>
                     <th className="p-3 md:p-4 font-semibold">Nama & Alamat</th>
                     <th className="p-3 md:p-4 font-semibold">Produk</th>
-                    <th className="p-3 md:p-4 font-semibold text-center">Pembayaran</th>
+                    <th className="p-3 md:p-4 font-semibold text-center">Metode</th>
                     <th className="p-3 md:p-4 font-semibold">Nominal</th>
-                    <th className="p-3 md:p-4 font-semibold">Kode Transaksi</th>
+                    <th className="p-3 md:p-4 font-semibold">Transaksi</th>
                     <th className="p-3 md:p-4 font-semibold text-center">Fee</th>
                     <th className="p-3 md:p-4 font-semibold">Nominal Fee</th>
                   </tr>
@@ -704,16 +703,16 @@
                     <tr key={row.ID || idx} onClick={() => setSelectedRecord(row)} className="hover:bg-indigo-50/50 cursor-pointer transition-colors group active:bg-indigo-100">
                       <td className="p-3 md:p-4 whitespace-nowrap text-gray-600">{row.Tanggal ? new Date(row.Tanggal).toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric'}) : '-'}</td>
                       <td className="p-3 md:p-4">
-                        <div className="font-semibold text-gray-800 group-hover:text-indigo-700 transition-colors whitespace-nowrap md:whitespace-normal">{row.Nama}</div>
-                        <div className="text-[10px] md:text-xs text-gray-500 truncate max-w-[300px] mt-0.5">{row.Alamat}</div>
+                        <div className="font-bold text-gray-800 group-hover:text-indigo-700 transition-colors whitespace-nowrap md:whitespace-normal">{row.Nama}</div>
+                        <div className="text-[10px] md:text-xs text-gray-500 truncate max-w-[150px] md:max-w-[200px] mt-0.5">{row.Alamat}</div>
                       </td>
                       <td className="p-3 md:p-4 text-gray-700 whitespace-nowrap">{row.Produk}</td>
                       <td className="p-3 md:p-4 text-center">
-                        <span className={`px-2 py-1 rounded-full text-[10px] md:text-xs font-semibold tracking-wide whitespace-nowrap ${row.Pembayaran === 'Transfer' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                        <span className={`px-2 py-1 rounded-full text-[10px] md:text-xs font-bold tracking-wide whitespace-nowrap ${row.Pembayaran === 'Transfer' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}`}>
                           {row.Pembayaran}
                         </span>
                       </td>
-                      <td className="p-3 md:p-4 font-semibold text-gray-800 whitespace-nowrap">{formatRp(row.Nominal)}</td>
+                      <td className="p-3 md:p-4 font-bold text-gray-800 whitespace-nowrap">{formatRp(row.Nominal)}</td>
                       <td className="p-3 md:p-4 text-[10px] md:text-xs font-mono text-gray-500 whitespace-nowrap">{row['Kode Transaksi']}</td>
                       <td className="p-3 md:p-4 text-center font-medium text-gray-600">{row['Persentase Fee']}%</td>
                       <td className="p-3 md:p-4 font-semibold text-indigo-700 whitespace-nowrap">{formatRp(row['Nominal Fee'])}</td>
@@ -758,21 +757,21 @@
       <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center modal-overlay sm:p-4 no-print">
         <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-4xl max-h-[95vh] sm:max-h-[90vh] flex flex-col transform transition-all border border-gray-100 overflow-hidden">
           <div className="p-4 sm:p-5 border-b flex justify-between items-center bg-gray-50/50">
-            <h3 className="font-bold text-xl text-gray-800 tracking-tight">Detail Transaksi</h3>
+            <h3 className="font-extrabold text-lg sm:text-xl text-gray-800 tracking-tight">Detail Transaksi</h3>
             <button onClick={onClose} disabled={isDeleting} className="text-gray-400 hover:text-gray-700 transition p-1 hover:bg-gray-200 rounded-lg">
               <IconX />
             </button>
           </div>
           <div className="p-4 sm:p-8 overflow-y-auto flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 bg-white pb-20 sm:pb-8">
             <div className="space-y-4 sm:space-y-5">
-              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Tanggal Transaksi</span><div className="font-semibold text-gray-800 text-sm sm:text-base">{new Date(record.Tanggal).toLocaleDateString('id-ID', {weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'})}</div></div>
-              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Nama Pelanggan</span><div className="font-semibold text-gray-900 text-sm sm:text-base">{record.Nama}</div></div>
-              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Alamat Lengkap</span><div className="font-semibold text-gray-800 text-sm sm:text-base">{record.Alamat}</div></div>
-              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Produk</span><div><span className="font-medium text-gray-800">{record.Produk}</span></div></div>
-              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Metode Pembayaran</span><div className="font-medium text-gray-800 text-sm sm:text-base">{record.Pembayaran}</div></div>
-              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Total Nominal</span><div className="font-semibold text-gray-800">{formatRp(record.Nominal)}</div></div>
+              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Tanggal</span><div className="font-semibold text-gray-800 text-sm sm:text-base">{new Date(record.Tanggal).toLocaleDateString('id-ID', {weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'})}</div></div>
+              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Nama Klien</span><div className="font-bold text-gray-900 text-sm sm:text-base">{record.Nama}</div></div>
+              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Alamat Lengkap</span><div className="font-medium text-gray-800 text-sm sm:text-base">{record.Alamat}</div></div>
+              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Produk</span><div><span className="font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded text-sm sm:text-base">{record.Produk}</span></div></div>
+              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Metode</span><div className="font-bold text-gray-800 text-sm sm:text-base">{record.Pembayaran}</div></div>
+              <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Total Nominal</span><div className="font-extrabold text-lg sm:text-xl text-gray-900">{formatRp(record.Nominal)}</div></div>
               <div className="flex flex-col sm:flex-row sm:border-b border-gray-50 pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">No. Transaksi</span><div><span className="font-mono text-xs sm:text-sm bg-gray-100 px-2 py-1 rounded text-gray-700">{record['Kode Transaksi']}</span></div></div>
-              <div className="flex flex-col sm:flex-row pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Fee</span><div className="font-semibold text-gray-800 text-sm sm:text-base">{record['Persentase Fee']}% <span className="text-gray-800 font-normal ml-1">({formatRp(record['Nominal Fee'])})</span></div></div>
+              <div className="flex flex-col sm:flex-row pb-2 sm:pb-3"><span className="text-gray-500 text-xs sm:text-sm w-32 shrink-0 mb-1 sm:mb-0">Potongan Fee</span><div className="font-bold text-rose-600 text-sm sm:text-base">{record['Persentase Fee']}% <span className="text-gray-400 font-normal ml-1">({formatRp(record['Nominal Fee'])})</span></div></div>
             </div>
             <div className="space-y-4 sm:space-y-6">
               <div className="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-100">
@@ -797,7 +796,7 @@
             <button onClick={onDelete} disabled={isDeleting} className={`flex justify-center items-center gap-2 text-rose-600 bg-white border border-rose-200 hover:bg-rose-50 hover:border-rose-300 px-5 py-3 sm:py-2.5 rounded-lg transition font-medium shadow-sm w-full sm:w-auto text-sm sm:text-base ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}>
               <IconTrash /> {isDeleting ? 'Memproses...' : 'Hapus Record'}
             </button>
-            <button onClick={onEdit} disabled={isDeleting} className="bg-indigo-600 text-white px-8 py-3 sm:py-2.5 rounded-lg shadow-md hover:bg-indigo-700 transition font-medium w-full sm:w-auto disabled:opacity-50 text-sm sm:text-base">
+            <button onClick={onEdit} disabled={isDeleting} className="bg-indigo-600 text-white px-8 py-3 sm:py-2.5 rounded-lg shadow-md hover:bg-indigo-700 transition font-bold w-full sm:w-auto disabled:opacity-50 text-sm sm:text-base">
               Edit Data
             </button>
           </div>
@@ -866,8 +865,8 @@
       return (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center modal-overlay sm:p-4 no-print">
           <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-3xl max-h-[95vh] sm:max-h-[90vh] flex flex-col transform transition-all border border-gray-100 overflow-hidden">
-            <div className="p-4 sm:p-5 border-b flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
-              <h3 className="font-semibold text-lg sm:text-xl text-gray-800 tracking-tight">{isEdit ? 'Ubah Detail Transaksi' : 'Tambah Record Laporan'}</h3>
+            <div className="p-4 sm:p-5 border-b flex justify-between items-center bg-gray-50/50">
+              <h3 className="font-extrabold text-lg sm:text-xl text-gray-800 tracking-tight">{isEdit ? 'Ubah Laporan' : 'Tambah Laporan'}</h3>
               <button onClick={onClose} disabled={submitting} className="text-gray-400 hover:text-gray-700 transition p-1 hover:bg-gray-200 rounded-lg">
                 <IconX />
               </button>
@@ -876,19 +875,19 @@
             <div className="p-4 sm:p-6 overflow-y-auto flex-1 pb-20 sm:pb-6">
               <form id="recordForm" onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                 <div>
-                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Tanggal Transaksi</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Tanggal Laporan</label>
                   <input type="date" required className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm sm:text-base" value={formData.Tanggal} onChange={e => setFormData({...formData, Tanggal: e.target.value})} />
                 </div>
                 <div>
-                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Kode Transaksi</label>
-                  <input type="text" required className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition uppercase font-mono text-sm sm:text-base placeholder-gray-400" placeholder="CMI1C-999" value={formData['Kode Transaksi']} onChange={e => setFormData({...formData, 'Kode Transaksi': e.target.value})} />
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">No Transaksi</label>
+                  <input type="text" required className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition uppercase font-mono text-sm sm:text-base placeholder-gray-400" placeholder="TRX-123" value={formData['Kode Transaksi']} onChange={e => setFormData({...formData, 'Kode Transaksi': e.target.value})} />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Nama Pelanggan</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Nama Lengkap Klien</label>
                   <input type="text" required className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm sm:text-base" placeholder="Masukkan nama..." value={formData.Nama} onChange={e => setFormData({...formData, Nama: e.target.value})} />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Alamat Lengkap</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Alamat / Lokasi</label>
                   <textarea required className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition resize-none text-sm sm:text-base" rows="2" placeholder="Masukkan alamat lengkap..." value={formData.Alamat} onChange={e => setFormData({...formData, Alamat: e.target.value})}></textarea>
                 </div>
 
@@ -896,7 +895,7 @@
                   <div>
                     <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Pilih/Ketik Produk Baru</label>
                     <select className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg mb-2 focus:ring-2 focus:ring-indigo-500 outline-none bg-white text-sm sm:text-base" value={formData.Produk} onChange={e => setFormData({...formData, Produk: e.target.value})}>
-                      <option value="">-- Pilih Produk --</option>
+                      <option value="">-- Daftar Produk --</option>
                       {(products || []).map(p => <option key={p} value={p}>{p}</option>)}
                     </select>
                     <input type="text" placeholder="*Atau buat nama produk baru" className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 outline-none" value={newProduct} onChange={e => { setNewProduct(e.target.value); setFormData({...formData, Produk: ''}); }} />
@@ -912,32 +911,32 @@
 
                 <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Nominal (Rp)</label>
-                    <input type="number" required className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none font-semibold text-gray-800 text-sm sm:text-base" value={formData.Nominal} onChange={e => setFormData({...formData, Nominal: e.target.value})} />
+                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Nominal Harga (Rp)</label>
+                    <input type="number" required className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-gray-800 text-sm sm:text-base" value={formData.Nominal} onChange={e => setFormData({...formData, Nominal: e.target.value})} />
                   </div>
                   <div>
-                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Persentase Fee (%)</label>
+                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Potongan Fee (%)</label>
                     <div className="relative">
-                      <input type="number" required className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none font-semibold text-grey-800 pr-8 text-sm sm:text-base" value={formData['Persentase Fee']} onChange={e => setFormData({...formData, 'Persentase Fee': e.target.value})} />
+                      <input type="number" required className="w-full border border-gray-300 p-2 sm:p-2.5 rounded-lg focus:ring-2 focus:ring-rose-500 outline-none font-bold text-rose-600 pr-8 text-sm sm:text-base" value={formData['Persentase Fee']} onChange={e => setFormData({...formData, 'Persentase Fee': e.target.value})} />
                       <span className="absolute right-3 top-2.5 text-gray-400 font-bold">%</span>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Nominal Fee (Rp)</label>
+                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Nominal Terpotong</label>
                     <input type="number" readOnly className="w-full border border-gray-200 bg-gray-100 p-2 sm:p-2.5 rounded-lg outline-none font-bold text-gray-500 cursor-not-allowed text-sm sm:text-base" value={formData['Nominal Fee']} />
                   </div>
                 </div>
 
                 <div className="border-t border-gray-100 pt-4 sm:pt-5 mt-2 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div>
-                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2"><IconBank/> Bukti Transfer <span className="text-gray-400 font-normal text-[10px] sm:text-xs">(Opsional)</span></label>
+                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2"><IconBank/> Bukti Transfer <span className="text-gray-400 font-normal text-[10px] sm:text-xs">(Ops)</span></label>
                     <input type="file" accept="image/*" className="w-full text-xs sm:text-sm file:mr-4 file:py-1.5 file:sm:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer" onChange={e => setFiles({...files, transfer: e.target.files[0]})} />
-                    {isEdit && formData['URL Bukti Transfer'] && !files.transfer && <span className="text-xs text-emerald-600 mt-2 block font-medium flex items-center gap-1"><svg xmlns="<http://www.w3.org/2000/svg>" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Dokumen tersimpan</span>}
+                    {isEdit && formData['URL Bukti Transfer'] && !files.transfer && <span className="text-xs text-emerald-600 mt-2 block font-medium flex items-center gap-1"><svg xmlns="<http://www.w3.org/2000/svg>" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Dokumen ada</span>}
                   </div>
                   <div>
-                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2"><IconList/> Bukti Perawatan <span className="text-gray-400 font-normal text-[10px] sm:text-xs">(Opsional)</span></label>
+                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2"><IconList/> Bukti Perawatan <span className="text-gray-400 font-normal text-[10px] sm:text-xs">(Ops)</span></label>
                     <input type="file" accept="image/*" className="w-full text-xs sm:text-sm file:mr-4 file:py-1.5 file:sm:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer" onChange={e => setFiles({...files, perawatan: e.target.files[0]})} />
-                    {isEdit && formData['URL Bukti Perawatan'] && !files.perawatan && <span className="text-xs text-emerald-600 mt-2 block font-medium flex items-center gap-1"><svg xmlns="<http://www.w3.org/2000/svg>" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Dokumen tersimpanada</span>}
+                    {isEdit && formData['URL Bukti Perawatan'] && !files.perawatan && <span className="text-xs text-emerald-600 mt-2 block font-medium flex items-center gap-1"><svg xmlns="<http://www.w3.org/2000/svg>" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Dokumen ada</span>}
                   </div>
                 </div>
               </form>
@@ -956,7 +955,7 @@
 
     const DashboardPrintView = ({ data, filterBulan, filterTahun }) => (
       <div>
-        <h1 className="text-2xl font-bold text-center mb-6">Dashboard Hasil Pena Anggih Saeful Khiyar</h1>
+        <h1 className="text-2xl font-bold text-center mb-6">Laporan Dashboard Analitik Portal Pena</h1>
         <p className="text-center mb-6 text-gray-600">
           Periode: {filterBulan === 'Semua' ? 'Sepanjang Tahun' : NAMA_BULAN[parseInt(filterBulan) - 1]} - {filterTahun}
         </p>
@@ -970,7 +969,7 @@
 
       return (
         <div>
-          <h1 className="text-2xl font-bold text-center mb-2">Hasil Pena Anggih Saeful Khiyar</h1>
+          <h1 className="text-2xl font-bold text-center mb-2">Master Rekap Laporan Portal Pena</h1>
           <p className="text-center mb-6 text-gray-600">
             Periode: {filterBulan === 'Semua' ? 'Sepanjang Tahun' : NAMA_BULAN[parseInt(filterBulan) - 1]} - {filterTahun}
           </p>
@@ -1031,7 +1030,7 @@
 
       return (
         <div>
-          <h1 className="text-2xl font-bold text-center mb-2 capitalize">Bukti {type} Anggih Saeful Khiyar</h1>
+          <h1 className="text-2xl font-bold text-center mb-2 capitalize">Cetak Bukti {type}</h1>
           <p className="text-center mb-6 text-gray-600">
             Periode: {filterBulan === 'Semua' ? 'Sepanjang Tahun' : NAMA_BULAN[parseInt(filterBulan) - 1]} - {filterTahun}
           </p>
