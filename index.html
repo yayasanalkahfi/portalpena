@@ -661,9 +661,10 @@
       return (
         <div className="space-y-4 md:space-y-6 w-full max-w-full">
           {/* Action Header Mobile Friendly */}
-          <div className="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 no-print w-full flex flex-col gap-3">
-            <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-lg shadow hover:bg-indigo-700 transition font-medium">
-              <IconPlus /> Tambah Data Transaksi
+          <div className="space-y-6">
+          <div className="flex flex-wrap gap-4 justify-between items-center no-print bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+            <div className="flex gap-2">
+              <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-lg shadow hover:bg-indigo-700 transition font-medium">
             </button>
             
             <div className="grid grid-cols-2 md:flex md:flex-wrap gap-2 w-full">
